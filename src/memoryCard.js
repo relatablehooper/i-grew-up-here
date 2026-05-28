@@ -16,6 +16,8 @@
    `hotspot` object) and never invents content of its own.
 ============================================================================ */
 
+import { assetPath } from "./assetPath.js";
+
 /* ----------------------------------------------------------------------------
    openMemoryCard(hotspot, room) — show the vignette for one hotspot.
      hotspot : { id, x, y, photo, title, caption, age }  (from content.js)
@@ -70,7 +72,7 @@ export function openMemoryCard(hotspot, room) {
   if (hotspot.photo) {
     const img = document.createElement("img");
     img.className = "memory-photo-img";
-    img.src = hotspot.photo;
+    img.src = assetPath(hotspot.photo);
     img.alt = hotspot.title;
     img.addEventListener("error", () => img.remove());
     card.querySelector(".memory-photo").appendChild(img);

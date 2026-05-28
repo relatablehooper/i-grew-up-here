@@ -20,6 +20,7 @@
 
 import { ROOMS, STAGES } from "./data/content.js";
 import { openMemoryCard } from "./memoryCard.js";
+import { assetPath } from "./assetPath.js";
 
 /* ----------------------------------------------------------------------------
    renderRoom(app, roomId) — paint one room into the container.
@@ -74,7 +75,7 @@ function renderScene(room) {
   if (room.image) {
     const img = document.createElement("img");
     img.className = "scene-image";
-    img.src = room.image;
+    img.src = assetPath(room.image);
     img.alt = room.name;
     img.addEventListener("error", () => img.remove());
     scene.appendChild(img);
@@ -155,7 +156,7 @@ function renderPano(room) {
       try {
         pannellum.viewer(mount.id, {
           type: "equirectangular",
-          panorama: room.image,
+          panorama: assetPath(room.image),
           autoLoad: true,
           showControls: true,
           hotSpots,
