@@ -1,0 +1,566 @@
+/* ============================================================================
+   main.css — ALL styling for the memory palace
+   ----------------------------------------------------------------------------
+   One stylesheet, organised top-to-bottom as:
+     1. Design tokens (colors, fonts, spacing) as CSS custom properties
+     2. The per-stage color system (the tint that makes time "feel" different)
+     3. Base / reset
+     4. The map hub (blueprint wayfinding)
+     5. The room view (scene, pano, hotspots, chrome)
+     6. Placeholders (shown when a real image is missing)
+     7. The memory card overlay (the literary vignette)
+     8. Stub views (intro / cafe, until those phases)
+
+   WHY CSS VARIABLES: the per-stage colors are injected at runtime by main.js
+   from STAGES in content.js (e.g. --stage-play). The student changes a color
+   by editing content.js; the design here just consumes the variable.
+============================================================================ */
+
+/* ============================================================================
+   1. DESIGN TOKENS
+============================================================================ */
+:root {
+  /* Two type families (CLAUDE.md section 7):
+     - serif for the literary vignettes ("this is literature")
+     - sans for wayfinding / UI labels */
+  --font-serif: "Spectral", Georgia, "Times New Roman", serif;
+  --font-sans: "Inter", system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+
+  /* Ink + paper: the whole thing reads like a drafting / blueprint sheet. */
+  --ink: #23211c; /* near-black, slightly warm — pen on paper */
+  --ink-soft: #6b675d; /* secondary text */
+  --paper: #efe9dd; /* warm cream drafting paper */
+  --paper-line: rgba(35, 33, 28, 0.1); /* faint grid lines */
+
+  /* Stage color fallbacks. main.js overwrites these from content.js at boot,
+     but defining them here means the design still works if JS is disabled and
+     keeps the values discoverable in one place. */
+  --stage-play: #f2b441;
+  --stage-performance: #3e78a0;
+  --stage-cultivation: #7c8b6b;
+  --stage-family: #e8915b;
+  --stage-none: #8d8678; /* neutral, for the entrance / cafe (no single stage) */
+
+  /* Default tint = neutral. Each [data-stage] block below overrides it. */
+  --tint: var(--stage-none);
+
+  /* Spacing + motion */
+  --gap: 1rem;
+  --radius: 10px;
+  --fade-slow: 900ms; /* memories should surface slowly, not pop */
+  --ease: cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+
+/* ============================================================================
+   2. PER-STAGE COLOR SYSTEM
+   Any element with data-stage="play" (etc.) gets that stage's color as --tint.
+   Children then use var(--tint) for gradients, rings, and accents — so an
+   entire room subtly carries the temperature of its life-stage.
+============================================================================ */
+[data-stage="play"] { --tint: var(--stage-play); }
+[data-stage="performance"] { --tint: var(--stage-performance); }
+[data-stage="cultivation"] { --tint: var(--stage-cultivation); }
+[data-stage="family"] { --tint: var(--stage-family); }
+[data-stage="none"] { --tint: var(--stage-none); }
+
+/* ============================================================================
+   3. BASE / RESET
+============================================================================ */
+* { box-sizing: border-box; }
+
+html, body { height: 100%; }
+
+body {
+  margin: 0;
+  font-family: var(--font-sans);
+  color: var(--ink);
+  background: var(--paper);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+#app { min-height: 100%; }
+
+a { color: inherit; }
+
+/* A consistent, visible focus ring everywhere (keyboard accessibility). */
+:focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: 3px;
+}
+
+/* ============================================================================
+   4. THE MAP HUB — architectural / blueprint wayfinding
+   The look: warm drafting paper with a faint grid, a hand-drawn building
+   outline, and labeled markers. Deliberately not a video-game minimap.
+============================================================================ */
+.map-view {
+  min-height: 100vh;
+  padding: clamp(1.25rem, 4vw, 3rem);
+  /* Faint drafting grid drawn with two repeating gradients over the paper. */
+  background-image:
+    linear-gradient(var(--paper-line) 1px, transparent 1px),
+    linear-gradient(90deg, var(--paper-line) 1px, transparent 1px);
+  background-size: 28px 28px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* --- Title block, like the title corner of a blueprint --- */
+.map-header { text-align: center; margin-bottom: clamp(1rem, 3vw, 2rem); }
+
+.map-title {
+  font-family: var(--font-serif);
+  font-weight: 500;
+  font-size: clamp(2rem, 5vw, 3.25rem);
+  letter-spacing: 0.01em;
+  margin: 0;
+}
+
+.map-subtitle {
+  font-style: italic;
+  color: var(--ink-soft);
+  margin: 0.35rem 0 0;
+  font-family: var(--font-serif);
+  font-size: clamp(1rem, 2.2vw, 1.2rem);
+}
+
+.map-hint {
+  margin: 0.75rem 0 0;
+  font-size: 0.8rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+
+/* --- The floor-plan canvas. Markers position themselves inside it by %.
+   A fixed aspect-ratio keeps the map.x / map.y percentages meaningful. --- */
+.floorplan {
+  position: relative;
+  width: 100%;
+  max-width: 920px;
+  aspect-ratio: 16 / 11;
+  margin: 0 auto;
+  /* The "building": a hand-drawn double outline on the paper. */
+  border: 1.5px solid var(--ink);
+  border-radius: 4px;
+  box-shadow: 0 0 0 5px var(--paper), 0 0 0 6.5px rgba(35, 33, 28, 0.35);
+  /* A whisper of inner shading so it reads as a space, not a flat box. */
+  background:
+    radial-gradient(120% 90% at 50% 0%, rgba(255, 255, 255, 0.35), transparent 60%);
+}
+
+/* --- A room marker: a dot + a hand-annotated label. --- */
+.room-marker {
+  position: absolute;
+  /* left/top come from inline styles (the room's map.x / map.y). */
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.4rem;
+  text-decoration: none;
+  color: var(--ink);
+  width: max-content;
+  max-width: 9rem;
+  text-align: center;
+  transition: transform 220ms var(--ease);
+}
+
+.room-dot {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--tint);
+  border: 2px solid var(--ink);
+  /* A soft halo in the stage color so the dot reads as "warm/cool". */
+  box-shadow: 0 0 0 6px color-mix(in srgb, var(--tint) 22%, transparent);
+  transition: box-shadow 220ms var(--ease), transform 220ms var(--ease);
+}
+
+.room-label {
+  font-size: 0.82rem;
+  letter-spacing: 0.06em;
+  line-height: 1.2;
+  /* A little paper chip behind the text so labels stay legible over the grid. */
+  background: color-mix(in srgb, var(--paper) 85%, transparent);
+  padding: 0.15rem 0.4rem;
+  border-radius: 4px;
+}
+
+/* Hover / keyboard focus: the marker lifts and its halo blooms. */
+.room-marker:hover,
+.room-marker:focus-visible {
+  transform: translate(-50%, -50%) scale(1.08);
+}
+.room-marker:hover .room-dot,
+.room-marker:focus-visible .room-dot {
+  box-shadow: 0 0 0 10px color-mix(in srgb, var(--tint) 30%, transparent);
+}
+
+/* --- Legend: the color key, built from STAGES. --- */
+.map-legend { margin-top: clamp(1.25rem, 3vw, 2.5rem); }
+.legend-list {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.4rem 1.4rem;
+  margin: 0;
+  padding: 0;
+}
+.legend-item { display: flex; align-items: center; gap: 0.5rem; }
+.legend-swatch {
+  width: 12px;
+  height: 12px;
+  border-radius: 3px;
+  background: var(--tint);
+  border: 1px solid var(--ink);
+}
+.legend-text { font-size: 0.82rem; letter-spacing: 0.04em; }
+.legend-ages { color: var(--ink-soft); }
+
+/* ============================================================================
+   5. THE ROOM VIEW
+============================================================================ */
+.room-view {
+  position: relative;
+  min-height: 100vh;
+  background: #14130f;
+  overflow: hidden;
+}
+
+/* A subtle full-room tint/vignette in the stage color, so moving between
+   rooms quietly changes the temperature of the light (CLAUDE.md section 7). */
+.room-view::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none; /* never blocks clicks on hotspots */
+  background:
+    radial-gradient(120% 100% at 50% 50%, transparent 55%, rgba(0, 0, 0, 0.55) 100%),
+    linear-gradient(0deg, color-mix(in srgb, var(--tint) 16%, transparent), transparent);
+  mix-blend-mode: multiply;
+}
+
+/* --- The flat-photo scene + the 360 pano both fill the view. --- */
+.scene, .pano {
+  position: absolute;
+  inset: 0;
+}
+
+.scene-image {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* fill the area, crop rather than distort */
+}
+
+/* --- Hotspots: clickable memory points floating over the scene. --- */
+.hotspot {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  /* left/top come from inline styles (the hotspot's x / y). */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.4rem;
+  background: none;
+  border: 0;
+  padding: 0.3rem;
+  cursor: pointer;
+  color: #fff;
+  z-index: 2;
+}
+
+.hotspot-ring {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  border: 2px solid #fff;
+  background: color-mix(in srgb, var(--tint) 60%, transparent);
+  box-shadow: 0 0 0 0 color-mix(in srgb, var(--tint) 50%, transparent);
+  /* A slow, calm pulse so the eye finds it without it feeling like a game. */
+  animation: hotspot-pulse 3.2s var(--ease) infinite;
+}
+
+@keyframes hotspot-pulse {
+  0% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--tint) 45%, transparent); }
+  70% { box-shadow: 0 0 0 16px transparent; }
+  100% { box-shadow: 0 0 0 0 transparent; }
+}
+
+.hotspot-title {
+  font-size: 0.78rem;
+  letter-spacing: 0.04em;
+  padding: 0.15rem 0.5rem;
+  border-radius: 4px;
+  background: rgba(0, 0, 0, 0.55);
+  opacity: 0;
+  transform: translateY(2px);
+  transition: opacity 200ms var(--ease), transform 200ms var(--ease);
+}
+.hotspot:hover .hotspot-title,
+.hotspot:focus-visible .hotspot-title {
+  opacity: 1;
+  transform: translateY(0);
+}
+.hotspot:hover .hotspot-ring,
+.hotspot:focus-visible .hotspot-ring {
+  background: color-mix(in srgb, var(--tint) 85%, transparent);
+}
+
+/* --- Room chrome: back button + nameplate, floating above the scene. --- */
+.room-chrome {
+  position: absolute;
+  inset: 0;
+  pointer-events: none; /* let clicks fall through to hotspots... */
+  z-index: 3;
+}
+.room-chrome > * { pointer-events: auto; } /* ...except the controls themselves */
+
+.back-button {
+  position: absolute;
+  top: 1.1rem;
+  left: 1.1rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.85rem;
+  letter-spacing: 0.04em;
+  text-decoration: none;
+  color: #fff;
+  background: rgba(0, 0, 0, 0.5);
+  padding: 0.5rem 0.85rem;
+  border-radius: 999px;
+  backdrop-filter: blur(4px);
+  transition: background 200ms var(--ease);
+}
+.back-button:hover { background: rgba(0, 0, 0, 0.72); }
+
+.room-nameplate {
+  position: absolute;
+  left: 50%;
+  bottom: 1.4rem;
+  transform: translateX(-50%);
+  text-align: center;
+  color: #fff;
+  text-shadow: 0 1px 12px rgba(0, 0, 0, 0.6);
+}
+.room-name {
+  display: block;
+  font-family: var(--font-serif);
+  font-size: clamp(1.4rem, 4vw, 2.2rem);
+}
+.room-stage-tag {
+  display: inline-block;
+  margin-top: 0.4rem;
+  font-size: 0.72rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  padding: 0.2rem 0.6rem;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--tint) 80%, #000 10%);
+  color: #fff;
+}
+
+/* Pannellum hotspots (only present in 360 rooms). */
+.pano-hotspot {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  border: 2px solid #fff;
+  background: color-mix(in srgb, var(--tint) 65%, transparent);
+  cursor: pointer;
+}
+.pano-hotspot-tooltip {
+  font-family: var(--font-sans);
+  font-size: 0.78rem;
+  background: rgba(0, 0, 0, 0.6);
+  color: #fff;
+  padding: 0.15rem 0.5rem;
+  border-radius: 4px;
+}
+
+/* --- Unknown-room fallback --- */
+.not-found {
+  display: grid;
+  place-items: center;
+  background: var(--paper);
+  color: var(--ink);
+}
+.not-found-card { text-align: center; }
+.not-found .back-button {
+  position: static;
+  color: var(--ink);
+  background: rgba(35, 33, 28, 0.08);
+  margin-top: 1rem;
+}
+
+/* ============================================================================
+   6. PLACEHOLDERS (shown when a real image is missing — CLAUDE.md section 6)
+   A clean tinted gradient + a label, so a missing photo is calm, not broken.
+============================================================================ */
+.placeholder {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: 1.5rem;
+  text-align: center;
+  /* Gradient built from the stage's tint so the placeholder matches the time. */
+  background:
+    linear-gradient(
+      135deg,
+      color-mix(in srgb, var(--tint) 55%, #16140f),
+      color-mix(in srgb, var(--tint) 18%, #0b0a07)
+    );
+}
+.placeholder-label {
+  font-family: var(--font-serif);
+  font-size: clamp(1rem, 2.6vw, 1.5rem);
+  color: rgba(255, 255, 255, 0.92);
+  letter-spacing: 0.02em;
+  max-width: 24ch;
+}
+
+/* ============================================================================
+   7. THE MEMORY CARD OVERLAY (the vignette)
+   Calm, slow fade in/out. Serif caption. Age shown subtly.
+============================================================================ */
+.memory-card-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  display: grid;
+  place-items: center;
+  padding: clamp(1rem, 4vw, 3rem);
+  background: rgba(10, 9, 7, 0.55);
+  backdrop-filter: blur(3px);
+  /* Start transparent; .is-open fades it in (added on the next frame in JS). */
+  opacity: 0;
+  transition: opacity var(--fade-slow) var(--ease);
+}
+.memory-card-backdrop.is-open { opacity: 1; }
+
+.memory-card {
+  position: relative;
+  width: min(880px, 100%);
+  max-height: 90vh;
+  overflow: auto;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0;
+  background: var(--paper);
+  border-radius: var(--radius);
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.5);
+  /* A gentle rise as it fades in. */
+  transform: translateY(10px);
+  transition: transform var(--fade-slow) var(--ease);
+}
+.memory-card-backdrop.is-open .memory-card { transform: translateY(0); }
+
+.memory-close {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.65rem;
+  z-index: 2;
+  width: 2rem;
+  height: 2rem;
+  border: 0;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.45);
+  color: #fff;
+  font-size: 1.25rem;
+  line-height: 1;
+  cursor: pointer;
+}
+
+/* The photo half (or its placeholder). */
+.memory-photo {
+  position: relative;
+  min-height: 260px;
+  overflow: hidden;
+  border-radius: var(--radius) 0 0 var(--radius);
+}
+.memory-photo-img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* The writing half. Generous whitespace around the vignette (section 7). */
+.memory-figure {
+  margin: 0;
+  padding: clamp(1.5rem, 3vw, 2.5rem);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.memory-caption {
+  font-family: var(--font-serif);
+  font-size: clamp(1.05rem, 2.2vw, 1.3rem);
+  line-height: 1.65;
+  color: var(--ink);
+}
+.memory-meta {
+  margin-top: 1.4rem;
+  padding-top: 0.9rem;
+  border-top: 1px solid rgba(35, 33, 28, 0.18);
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+}
+.memory-title {
+  font-size: 0.8rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+/* The age is deliberately quiet — a small, italic aside. */
+.memory-age {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: 0.95rem;
+  color: color-mix(in srgb, var(--tint) 55%, var(--ink));
+}
+
+/* On narrow screens, stack the photo above the writing. */
+@media (max-width: 640px) {
+  .memory-card { grid-template-columns: 1fr; }
+  .memory-photo { border-radius: var(--radius) var(--radius) 0 0; }
+}
+
+/* Respect readers who prefer reduced motion — drop the fades and pulse. */
+@media (prefers-reduced-motion: reduce) {
+  * { animation: none !important; transition: none !important; }
+}
+
+/* ============================================================================
+   8. STUB VIEWS (intro / cafe — until those phases are built)
+============================================================================ */
+.stub-view {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: 2rem;
+  background: var(--paper);
+}
+.stub-card { text-align: center; max-width: 32ch; }
+.stub-title {
+  font-family: var(--font-serif);
+  font-weight: 500;
+  font-size: clamp(1.8rem, 5vw, 2.6rem);
+  margin: 0 0 0.5rem;
+}
+.stub-note { color: var(--ink-soft); margin: 0 0 1.4rem; line-height: 1.6; }
+.stub-view .back-button {
+  position: static;
+  color: var(--ink);
+  background: rgba(35, 33, 28, 0.08);
+}

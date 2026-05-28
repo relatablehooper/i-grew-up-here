@@ -1,0 +1,52 @@
+# ============================================================================
+# Deploys the site to GitHub Pages automatically on every push to `main`.
+# After this runs once, you NEVER touch deployment again: edit src/data/content.js,
+# commit, push, and the live site updates itself in ~1 minute.
+# ============================================================================
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch: # lets you trigger a deploy by hand from the Actions tab
+
+# Permissions the deploy needs (publish to Pages).
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Only one deploy at a time; cancel an older run if a newer push arrives.
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - run: npm ci
+      - run: npm run placeholders # regenerate any missing placeholder images
+      - run: npm run build # outputs the static site to /dist
+
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

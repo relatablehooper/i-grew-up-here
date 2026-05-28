@@ -1,0 +1,10 @@
+node_modules
+dist
+.DS_Store
+*.log
+
+# Personal planning notes — kept OUT of the public repo on purpose.
+# (Your rubric strategy / private notes shouldn't be on a public website.)
+# Delete these two lines if you ever want them published.
+CLAUDE (1).md
+PROJECT_PLAN.md

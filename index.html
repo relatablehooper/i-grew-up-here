@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!--
+      Single entry point for the whole site (see CLAUDE.md section 4).
+      Everything is rendered into <div id="app"> by the JavaScript engine.
+      The story content itself lives in src/data/content.js — never here.
+    -->
+    <title>I Grew Up Here</title>
+    <meta
+      name="description"
+      content="A memory palace, in the shape of a gym. A post-modern personal story."
+    />
+
+    <!-- Two type families: a literary serif for vignettes, a clean sans for UI.
+         Loaded from Google Fonts. (CLAUDE.md section 7.) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Spectral:ital,wght@0,400;0,500;1,400&family=Inter:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+
+    <link rel="stylesheet" href="/src/styles/main.css" />
+  </head>
+  <body>
+    <!-- The engine paints every view (map, room, card) into this container. -->
+    <div id="app"></div>
+
+    <!-- ES module entry. Vite bundles everything that this imports. -->
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>
