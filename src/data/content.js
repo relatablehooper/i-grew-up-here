@@ -91,7 +91,7 @@ export const ROOMS = [
       {
         id: "front-doors",
         x: 50, y: 60,
-        photo: "/photos/now.jpg",
+        photo: "/photos/ayaan-now.jpg",
         title: "The doors",
         age: 18,
         caption: `The doors open the same way they always have.
@@ -118,7 +118,7 @@ This is not a tour. This is a memory palace. Move through it however you need to
       {
         id: "kids-club",
         x: 50, y: 55,
-        photo: "/photos/kids-club.jpg",
+        photo: "/photos/ayaan-young.jpg",
         title: "Kids' Club",
         caption: `The first thing you should know is that I didn't always want to be here.
 
@@ -155,7 +155,7 @@ I just couldn't see it yet.`,
       {
         id: "the-court",
         x: 50, y: 55,
-        photo: "/photos/court.jpg",
+        photo: "/photos/ayaan-teen.jpg",
         title: "The Court",
         caption: `There is no single moment. That's what I want to be honest about.
 
@@ -192,7 +192,7 @@ Even when it was hard. Especially then.`,
       {
         id: "the-weight-floor",
         x: 50, y: 55,
-        photo: "/photos/weights.jpg",
+        photo: "/photos/ayaan-weights.jpg",
         title: "The Weight Floor",
         caption: `The shift didn't announce itself.
 
@@ -265,7 +265,7 @@ But in the logic of a memory palace, every room holds everything that ever happe
       id: "self-play",
       stage: "play",
       x: 30, y: 55,
-      photo: "/photos/age8-cafe.jpg",
+      photo: "/photos/ayaan-young.jpg",
       title: "Eight",
       caption: `The eight-year-old near the wall, watching the door for his dad, not yet knowing that scoring on that mini hoop in front of a group of kids would be the moment everything loosened.`,
     },
@@ -273,7 +273,7 @@ But in the logic of a memory palace, every room holds everything that ever happe
       id: "self-performance",
       stage: "performance",
       x: 50, y: 50,
-      photo: "/photos/age14-cafe.jpg",
+      photo: "/photos/ayaan-teen.jpg",
       title: "Fourteen",
       caption: `The fourteen-year-old still catching his breath from the court, no headphones, just the sound of the ball and the floor and his own breathing, frustrated and hungry and full of an ambition that doesn't have a shape yet.`,
     },
@@ -281,7 +281,7 @@ But in the logic of a memory palace, every room holds everything that ever happe
       id: "self-cultivation",
       stage: "cultivation",
       x: 70, y: 55,
-      photo: "/photos/now-cafe.jpg",
+      photo: "/photos/ayaan-now.jpg",
       title: "Now",
       age: 18,
       caption: `And the present version: tired in the specific good way that follows real effort, occasionally sitting here with Christian after a session, occasionally alone, occasionally just passing through on the way to somewhere else.
