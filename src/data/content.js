@@ -58,6 +58,18 @@ export const STAGES = {
        title     short label (also used as alt text)
        caption   the vignette (THIS is your writing)
        age       number, shown subtly on the card
+
+   OPTIONAL ROOM FIELDS:
+     personPhoto   { src, position, scale, verticalAlign, blendMode? }  or null
+                   A photo of YOU standing in the room (transparent PNG works
+                   best). It is composited onto the scene with a drop shadow
+                   and a soft ground shadow so it feels present in the space,
+                   not pasted on. See the comment above the personPhoto field
+                   in src/room.js for prep tips. Leave null until you have one.
+     easterEggVideo { src, label, triggerPosition: { x, y } } or null
+                   A small trigger icon appears in that room. Click -> a
+                   small video plays in an overlay. Only used on weights and
+                   court today (the prompt's request).
 ---------------------------------------------------------------------------- */
 export const ROOMS = [
 
@@ -70,6 +82,7 @@ export const ROOMS = [
     image: "/scenes/entrance.jpg",
     intro: true,                 // the single guided beat before free exploration
     map: { x: 50, y: 92 },
+    personPhoto: null,
     hotspots: [
       {
         id: "front-doors",
@@ -95,6 +108,7 @@ export const ROOMS = [
     type: "scene",
     image: "/scenes/kids-academy.jpg",
     map: { x: 22, y: 70 },
+    personPhoto: null,
     hotspots: [
       {
         id: "magnetic-tiles",
@@ -139,6 +153,7 @@ export const ROOMS = [
     type: "scene",
     image: "/scenes/indoor-pool.jpg",
     map: { x: 35, y: 55 },
+    personPhoto: null,
     hotspots: [
       {
         id: "swim-lessons",
@@ -172,6 +187,12 @@ export const ROOMS = [
     type: "scene",
     image: "/scenes/court.jpg",
     map: { x: 70, y: 62 },
+    personPhoto: null,
+    easterEggVideo: {
+      src: "/videos/court-clip.mp4",
+      label: "a moment from this room",
+      triggerPosition: { x: 12, y: 18 }, // top-left corner of the scene
+    },
     hotspots: [
       {
         id: "team-training",
@@ -206,6 +227,7 @@ export const ROOMS = [
     type: "scene",
     image: "/scenes/calisthenics.jpg",
     map: { x: 82, y: 50 },
+    personPhoto: null,
     hotspots: [
       {
         id: "bodyweight",
@@ -240,6 +262,12 @@ export const ROOMS = [
     type: "scene",
     image: "/scenes/weights.jpg",
     map: { x: 78, y: 32 },
+    personPhoto: null,
+    easterEggVideo: {
+      src: "/videos/weights-clip.mp4",
+      label: "a moment from this room",
+      triggerPosition: { x: 88, y: 82 }, // bottom-right corner of the scene
+    },
     hotspots: [
       {
         id: "lifting",
@@ -274,6 +302,7 @@ export const ROOMS = [
     type: "scene",
     image: "/scenes/sauna.jpg",
     map: { x: 62, y: 24 },
+    personPhoto: null,
     hotspots: [
       {
         id: "recovery",
@@ -298,6 +327,7 @@ export const ROOMS = [
     type: "scene",
     image: "/scenes/outdoor-pool.jpg",
     map: { x: 18, y: 30 },
+    personPhoto: null,
     hotspots: [
       {
         id: "slide",

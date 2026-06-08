@@ -22,6 +22,7 @@ import { ROOMS, STAGES } from "./data/content.js";
 import { openMemoryCard } from "./memoryCard.js";
 import { assetPath } from "./assetPath.js";
 import { markVisited } from "./visited.js";
+import { openEasterEgg } from "./easterEgg.js";
 
 /* ----------------------------------------------------------------------------
    renderRoom(app, roomId) — paint one room into the container.
@@ -86,12 +87,108 @@ function renderScene(room) {
     scene.appendChild(img);
   }
 
+  // PERSON PHOTO — composited present-day Ayaan in the scene, if set.
+  if (room.personPhoto) {
+    appendPersonPhoto(scene, room.personPhoto);
+  }
+
   // Lay the hotspots over the scene.
   for (const hotspot of room.hotspots || []) {
     scene.appendChild(makeSceneHotspot(room, hotspot));
   }
 
+  // EASTER EGG — a small pulsing trigger in a corner of the room. Click opens
+  // the video overlay (easterEgg.js). Only present if content.js sets the
+  // room's easterEggVideo. Missing video file -> "coming soon" placeholder.
+  if (room.easterEggVideo) {
+    scene.appendChild(makeEasterEggTrigger(room.easterEggVideo));
+  }
+
   return scene;
+}
+
+/* ----------------------------------------------------------------------------
+   makeEasterEggTrigger(easterEggVideo) — the tiny pulsing icon that opens
+   the hidden video overlay. Positioned by easterEggVideo.triggerPosition
+   (x, y as percentages of the scene).
+---------------------------------------------------------------------------- */
+function makeEasterEggTrigger(easterEggVideo) {
+  const btn = document.createElement("button");
+  btn.className = "easter-trigger";
+  btn.type = "button";
+  // Default to bottom-right if the data forgets to set a position.
+  const pos = easterEggVideo.triggerPosition || { x: 88, y: 82 };
+  btn.style.left = `${pos.x}%`;
+  btn.style.top = `${pos.y}%`;
+  btn.setAttribute("aria-label", "A hidden clip from this room");
+  // A tiny play-circle SVG icon.
+  btn.innerHTML = `
+    <svg viewBox="0 0 24 24" aria-hidden="true">
+      <circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1.5"/>
+      <polygon points="10,8 17,12 10,16" fill="currentColor"/>
+    </svg>
+  `;
+  btn.addEventListener("click", () => openEasterEgg(easterEggVideo));
+  return btn;
+}
+
+/* ----------------------------------------------------------------------------
+   appendPersonPhoto(scene, personPhoto) — composite present-day Ayaan into
+   the room scene so the figure feels PRESENT in the space, not pasted on top.
+
+   ┌─────────────────────────────────────────────────────────────────────────┐
+   │ PHOTO PREP NOTE FOR AYAAN                                                │
+   │                                                                          │
+   │ For best results, photos of you in each room should be taken against     │
+   │ the actual room background. If you want the cutout look, take the photo  │
+   │ against a plain wall or use the Background Eraser app on iPhone to       │
+   │ remove the background before saving as PNG.                              │
+   │                                                                          │
+   │ If you keep the background in the photo, set personPhoto.blendMode to    │
+   │ 'normal' and position: 'overlay-corner' to place it as a small inset     │
+   │ rather than a full composite. Both approaches work — cutout PNG          │
+   │ composited into the scene looks best.                                    │
+   └─────────────────────────────────────────────────────────────────────────┘
+
+   Schema in content.js:
+     personPhoto: {
+       src:           "/photos/ayaan-court.png",
+       position:      "left" | "right" | "center",
+       scale:         0.85,                       // height as fraction of scene
+       verticalAlign: "bottom",                   // always bottom — feet down
+       blendMode:     "multiply" | "luminosity" | "normal"  // optional
+     }
+---------------------------------------------------------------------------- */
+function appendPersonPhoto(scene, personPhoto) {
+  const position = personPhoto.position || "center";
+  const scale = personPhoto.scale ?? 0.85;
+  const blendMode = personPhoto.blendMode || "multiply";
+
+  // Ground shadow: a soft oval beneath the figure. Pure CSS gradient — no
+  // image needed. Width is proportional to the figure's scale so a smaller
+  // figure casts a smaller shadow.
+  const shadow = document.createElement("div");
+  shadow.className = "person-ground-shadow";
+  shadow.dataset.position = position;
+  shadow.style.width = `${Math.round(scale * 22)}%`;
+  scene.appendChild(shadow);
+
+  // The figure. height = scale * 100% of the scene; blend-mode + drop-shadow
+  // do the visual "settling into the room."
+  const img = document.createElement("img");
+  img.className = "person-photo";
+  img.dataset.position = position;
+  img.style.height = `${Math.round(scale * 100)}%`;
+  img.style.mixBlendMode = blendMode;
+  img.src = assetPath(personPhoto.src);
+  img.alt = ""; // decorative — the scene already has alt text
+  // If the file isn't there yet, quietly remove BOTH the figure and its shadow
+  // so a missing photo never leaves a "shadow with nothing above it."
+  img.addEventListener("error", () => {
+    img.remove();
+    shadow.remove();
+  });
+  scene.appendChild(img);
 }
 
 /* ----------------------------------------------------------------------------

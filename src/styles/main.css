@@ -134,78 +134,130 @@ a { color: inherit; }
   color: var(--ink-soft);
 }
 
-/* --- The floor-plan canvas. Markers position themselves inside it by %.
-   A fixed aspect-ratio keeps the map.x / map.y percentages meaningful. --- */
+/* --- The floor-plan canvas. Holds the inline SVG, which does its own
+   scaling. We give it a max-width and a soft paper frame so the drawing
+   sits on the page like an architectural sheet. --- */
 .floorplan {
   position: relative;
   width: 100%;
-  max-width: 920px;
-  aspect-ratio: 16 / 11;
+  max-width: 980px;
   margin: 0 auto;
-  /* The "building": a hand-drawn double outline on the paper. */
-  border: 1.5px solid var(--ink);
-  border-radius: 4px;
-  box-shadow: 0 0 0 5px var(--paper), 0 0 0 6.5px rgba(35, 33, 28, 0.35);
-  /* A whisper of inner shading so it reads as a space, not a flat box. */
-  background:
-    radial-gradient(120% 90% at 50% 0%, rgba(255, 255, 255, 0.35), transparent 60%);
 }
 
-/* --- A room marker: a dot + a hand-annotated label. --- */
-.room-marker {
-  position: absolute;
-  /* left/top come from inline styles (the room's map.x / map.y). */
-  transform: translate(-50%, -50%);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 0.4rem;
-  text-decoration: none;
+/* The SVG fills the floorplan width; its viewBox locks the aspect ratio. */
+.floorplan-svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+/* --- THE BUILDING OUTLINE — dashed, slightly imperfect. The dashes are the
+   memory-palace cue: walls remembered, not measured. --- */
+.building-outline {
+  fill: none;
+  stroke: var(--ink);
+  stroke-width: 1.6;
+  stroke-dasharray: 7 4;
+  opacity: 0.85;
+}
+
+/* --- The "outside" zone behind the outdoor pool — a soft family-warm
+   wash so the boundary between indoor and outdoor is felt at a glance. --- */
+.outdoor-area {
+  fill: color-mix(in srgb, var(--stage-family) 8%, var(--paper));
+  stroke: color-mix(in srgb, var(--ink) 35%, transparent);
+  stroke-width: 1;
+  stroke-dasharray: 2 4; /* very light dashed border */
+}
+
+/* --- ROOM ZONES. data-stage drives the per-room tint (var(--tint)); data-
+   visited swaps the dashed walls for solid ones, and the CSS later in this
+   block hides the pulse-dot on visited rooms. --- */
+.room-zone {
+  cursor: pointer;
+}
+.room-zone .room-rect {
+  fill: color-mix(in srgb, var(--tint) 14%, transparent);
+  stroke: var(--ink);
+  stroke-width: 1.3;
+  stroke-dasharray: 5 3;
+  transition: fill 220ms var(--ease), stroke-dasharray 220ms var(--ease);
+}
+
+/* Hover / keyboard focus: the room "wakes up" — fill brightens and the
+   wall draws cleaner. SVG <a> wraps each clickable room, so focus-within
+   on the zone group catches keyboard focus on the anchor too. */
+a:hover .room-rect,
+a:focus-visible .room-rect,
+.room-zone:hover .room-rect,
+.room-zone:focus-visible .room-rect {
+  fill: color-mix(in srgb, var(--tint) 30%, transparent);
+  stroke-dasharray: 0;
+}
+
+/* Visited: walls firm up (no more dashes) and the label gets a soft
+   tint-colored underline — same "marginalia" feel as before. */
+.room-zone[data-visited="true"] .room-rect {
+  stroke-dasharray: 0;
+}
+.room-zone[data-visited="true"] .room-zone-label {
+  text-decoration: underline;
+  text-decoration-color: color-mix(in srgb, var(--tint) 80%, transparent);
+  text-decoration-thickness: 1.4px;
+  text-underline-offset: 3px;
+}
+
+/* The serif room label inside each zone. */
+.room-zone-label {
+  font-family: var(--font-serif);
+  font-size: 16px;
+  fill: var(--ink);
+  pointer-events: none;
+}
+
+/* The room icon — a few stroked lines in ink. We use stroke="currentColor"
+   on all primitives so we can color them via fill/stroke here. */
+.room-icon {
   color: var(--ink);
-  width: max-content;
-  max-width: 9rem;
-  text-align: center;
-  transition: transform 220ms var(--ease);
+  pointer-events: none;
+}
+.room-icon * {
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  vector-effect: non-scaling-stroke;
+}
+.room-icon *[fill="currentColor"] { fill: currentColor; stroke: none; }
+
+/* The unvisited pulse — a small dot calling attention to "still something
+   here." Hidden once the room has been opened. */
+.pulse-dot {
+  fill: color-mix(in srgb, var(--tint) 75%, var(--ink) 5%);
+  transform-origin: center;
+  transform-box: fill-box;
+  animation: map-pulse 2.6s var(--ease) infinite;
+}
+@keyframes map-pulse {
+  0%   { opacity: 0.85; transform: scale(1); }
+  50%  { opacity: 0.25; transform: scale(1.7); }
+  100% { opacity: 0.85; transform: scale(1); }
+}
+.room-zone[data-visited="true"] .pulse-dot { display: none; }
+
+/* Small drafting labels (the "OUTDOOR" tag, the title block in the corner). */
+.map-label-tiny {
+  font-family: var(--font-sans);
+  font-size: 10px;
+  letter-spacing: 0.22em;
+  fill: var(--ink-soft);
+  text-transform: uppercase;
 }
 
-.room-dot {
-  width: 14px;
-  height: 14px;
-  border-radius: 50%;
-  background: var(--tint);
-  border: 2px solid var(--ink);
-  /* A soft halo in the stage color so the dot reads as "warm/cool". */
-  box-shadow: 0 0 0 6px color-mix(in srgb, var(--tint) 22%, transparent);
-  transition: box-shadow 220ms var(--ease), transform 220ms var(--ease);
-}
-
-.room-label {
-  font-size: 0.82rem;
-  letter-spacing: 0.06em;
-  line-height: 1.2;
-  /* A little paper chip behind the text so labels stay legible over the grid. */
-  background: color-mix(in srgb, var(--paper) 85%, transparent);
-  padding: 0.15rem 0.4rem;
-  border-radius: 4px;
-}
-
-/* Visited: a thin tint-colored underline beneath the label — a small
-   "I've inhabited this room" annotation, like marginalia. Set by map.js
-   from localStorage via visited.js. */
-.room-marker[data-visited="true"] .room-label,
-.cafe-marker[data-visited="true"] .cafe-marker-label {
-  border-bottom: 1.5px solid color-mix(in srgb, var(--tint) 80%, transparent);
-  padding-bottom: 0.15rem;
-}
-
-/* Hover / keyboard focus: the marker lifts and its halo blooms. */
-.room-marker:hover,
-.room-marker:focus-visible {
-  transform: translate(-50%, -50%) scale(1.08);
-}
-.room-marker:hover .room-dot,
-.room-marker:focus-visible .room-dot {
-  box-shadow: 0 0 0 10px color-mix(in srgb, var(--tint) 30%, transparent);
+/* The title block in the lower-left — a thin rule + two lines of sans. */
+.map-title-block line {
+  stroke: var(--ink-soft);
+  stroke-width: 1;
 }
 
 /* --- Legend: the color key, built from STAGES. --- */
@@ -688,49 +740,8 @@ a { color: inherit; }
     0 14px 36px rgba(0, 0, 0, 0.6);
 }
 
-/* The cafe's marker on the map — distinct from a room marker so the eye
-   notices "this is somewhere else": ink bullseye, italic serif label. */
-.cafe-marker {
-  position: absolute;
-  transform: translate(-50%, -50%);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 0.45rem;
-  text-decoration: none;
-  color: var(--ink);
-  width: max-content;
-  max-width: 9rem;
-  text-align: center;
-  transition: transform 220ms var(--ease);
-}
-.cafe-marker-dot {
-  position: relative;
-  width: 16px;
-  height: 16px;
-  border-radius: 50%;
-  background: var(--paper);
-  border: 2px solid var(--ink);
-  box-shadow: 0 0 0 6px rgba(35, 33, 28, 0.06);
-}
-.cafe-marker-dot::after {
-  content: "";
-  position: absolute;
-  inset: 4px;
-  border-radius: 50%;
-  background: var(--ink);
-}
-.cafe-marker-label {
-  font-family: var(--font-serif);
-  font-style: italic;
-  font-size: 0.85rem;
-  letter-spacing: 0.02em;
-  background: color-mix(in srgb, var(--paper) 88%, transparent);
-  padding: 0.15rem 0.5rem;
-  border-radius: 4px;
-}
-.cafe-marker:hover,
-.cafe-marker:focus-visible { transform: translate(-50%, -50%) scale(1.06); }
+/* (The old HTML cafe-marker rules used to live here. The cafe is now a
+   zone in the inline-SVG floor plan instead — see .room-zone above.) */
 
 /* ============================================================================
    9. THE INTRO — the single guided beat before free exploration
@@ -973,7 +984,200 @@ a { color: inherit; }
 }
 
 /* ============================================================================
-   13. STUB VIEWS (kept for any future placeholder route)
+   13. PERSON PHOTO COMPOSITING (present-day Ayaan in each room)
+   The figure sits in the SCENE (between the photo and the hotspots), anchored
+   to the bottom. A drop-shadow on the PNG + a soft oval ground-shadow grounds
+   it in the room so it doesn't read as a sticker. Schema lives in content.js
+   (room.personPhoto). See appendPersonPhoto() in room.js for prep notes.
+============================================================================ */
+.person-photo {
+  position: absolute;
+  bottom: 0;
+  z-index: 1; /* above the scene image, below hotspots (z-index 2) */
+  pointer-events: none; /* never blocks clicks on hotspots */
+  filter: drop-shadow(4px 0px 12px rgba(0, 0, 0, 0.35));
+  /* mix-blend-mode is set inline from personPhoto.blendMode */
+}
+.person-photo[data-position="left"]   { left: 22%; transform: translateX(-50%); }
+.person-photo[data-position="right"]  { left: 78%; transform: translateX(-50%); }
+.person-photo[data-position="center"] { left: 50%; transform: translateX(-50%); }
+
+/* The soft oval shadow on the ground beneath the figure. Pure CSS gradient
+   — no image. Width comes from JS (scaled to the figure). */
+.person-ground-shadow {
+  position: absolute;
+  bottom: 1.5%;
+  height: 3.5%;
+  pointer-events: none;
+  z-index: 0; /* under the figure but over the scene image */
+  background: radial-gradient(
+    ellipse at center,
+    rgba(0, 0, 0, 0.5) 0%,
+    rgba(0, 0, 0, 0.15) 55%,
+    transparent 75%
+  );
+  filter: blur(2px);
+}
+.person-ground-shadow[data-position="left"]   { left: 22%; transform: translateX(-50%); }
+.person-ground-shadow[data-position="right"]  { left: 78%; transform: translateX(-50%); }
+.person-ground-shadow[data-position="center"] { left: 50%; transform: translateX(-50%); }
+
+/* On phones, don't let the figure dominate. */
+@media (max-width: 640px) {
+  .person-photo { max-height: 62%; }
+}
+
+/* ============================================================================
+   14. EASTER EGG — pulsing trigger icon + floating video overlay
+   The trigger is a tiny play-circle in one corner of a room, low opacity
+   until hovered. Click opens a small floating window with a short clip — not
+   fullscreen, more like a clip pulled out of a pocket to show you. Missing
+   video file falls back to a "coming soon" placeholder.
+============================================================================ */
+.easter-trigger {
+  position: absolute;
+  /* left/top come from inline styles (easterEggVideo.triggerPosition). */
+  width: 30px;
+  height: 30px;
+  transform: translate(-50%, -50%);
+  display: grid;
+  place-items: center;
+  padding: 0;
+  background: rgba(0, 0, 0, 0.35);
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.45);
+  border-radius: 50%;
+  backdrop-filter: blur(3px);
+  cursor: pointer;
+  opacity: 0.4; /* subtle until found */
+  transition: opacity 220ms var(--ease), transform 220ms var(--ease);
+  z-index: 2; /* same level as hotspots */
+  animation: easter-breathe 3.6s var(--ease) infinite;
+}
+.easter-trigger svg {
+  width: 18px;
+  height: 18px;
+  display: block;
+}
+.easter-trigger:hover,
+.easter-trigger:focus-visible {
+  opacity: 1;
+  transform: translate(-50%, -50%) scale(1.12);
+}
+@keyframes easter-breathe {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(255,255,255,0.2); }
+  50%      { box-shadow: 0 0 0 8px rgba(255,255,255,0); }
+}
+
+/* The floating video overlay — slow fade, like the memory card. */
+.easter-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 55; /* above hotspots/about-button, below memory-card (50)? actually above to keep it modal */
+  display: grid;
+  place-items: center;
+  padding: clamp(1rem, 4vw, 3rem);
+  background: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(3px);
+  opacity: 0;
+  transition: opacity var(--fade-slow) var(--ease);
+}
+.easter-overlay.is-open { opacity: 1; }
+
+.easter-card {
+  position: relative;
+  width: clamp(280px, 40vw, 560px);
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  transform: translateY(8px);
+  transition: transform var(--fade-slow) var(--ease);
+}
+.easter-overlay.is-open .easter-card { transform: translateY(0); }
+
+.easter-close {
+  position: absolute;
+  top: -36px;
+  right: -4px;
+  width: 2rem;
+  height: 2rem;
+  border: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.12);
+  color: #fff;
+  font-size: 1.2rem;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.easter-label {
+  margin: 0;
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: 0.92rem;
+  color: rgba(255, 255, 255, 0.7);
+  text-align: center;
+  letter-spacing: 0.01em;
+}
+
+.easter-frame {
+  position: relative;
+  aspect-ratio: 16 / 9;
+  background: #0a0907;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow:
+    0 0 0 1px rgba(255, 255, 255, 0.08),
+    0 30px 80px rgba(0, 0, 0, 0.7);
+}
+
+.easter-video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  background: #0a0907;
+}
+
+.easter-unmute {
+  position: absolute;
+  bottom: 0.6rem;
+  right: 0.6rem;
+  font-family: var(--font-sans);
+  font-size: 0.65rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: #fff;
+  background: rgba(0, 0, 0, 0.55);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 999px;
+  padding: 0.32rem 0.7rem;
+  cursor: pointer;
+  backdrop-filter: blur(4px);
+}
+.easter-unmute:hover { background: rgba(0, 0, 0, 0.78); }
+
+/* "Coming soon" fallback (no video file yet). */
+.easter-frame.is-coming-soon {
+  display: grid;
+  place-items: center;
+}
+.easter-soon {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: 1rem;
+  color: rgba(255, 255, 255, 0.65);
+  letter-spacing: 0.02em;
+}
+
+@media (max-width: 640px) {
+  .easter-card { width: clamp(260px, 88vw, 480px); }
+  .easter-trigger { width: 36px; height: 36px; }
+}
+
+/* ============================================================================
+   14a. STUB VIEWS (kept for any future placeholder route)
 ============================================================================ */
 .stub-view {
   min-height: 100vh;
@@ -997,7 +1201,7 @@ a { color: inherit; }
 }
 
 /* ============================================================================
-   14. MOBILE / NARROW VIEWPORTS
+   15. MOBILE / NARROW VIEWPORTS
    Phones get a more compact map (smaller dots + labels, slightly squarer
    floor-plan so it fills the screen), shrunken cafe portraits so all three
    selves still fit at one table, and smaller corner controls. Everything
@@ -1011,19 +1215,10 @@ a { color: inherit; }
   .map-subtitle { font-size: 0.95rem; }
   .map-hint { font-size: 0.7rem; letter-spacing: 0.1em; }
 
-  .floorplan { aspect-ratio: 6 / 5; max-width: 100%; }
-
-  .room-marker { gap: 0.25rem; max-width: 6.5rem; }
-  .room-dot { width: 10px; height: 10px; border-width: 1.5px; }
-  .room-label {
-    font-size: 0.68rem;
-    letter-spacing: 0.04em;
-    padding: 0.1rem 0.3rem;
-  }
-
-  .cafe-marker { gap: 0.3rem; max-width: 6.5rem; }
-  .cafe-marker-dot { width: 12px; height: 12px; }
-  .cafe-marker-label { font-size: 0.72rem; padding: 0.1rem 0.35rem; }
+  .floorplan { max-width: 100%; }
+  /* On a small screen, shrink the SVG labels so the floor-plan stays readable. */
+  .room-zone-label { font-size: 13px; }
+  .map-label-tiny { font-size: 8px; letter-spacing: 0.16em; }
 
   .legend-list { gap: 0.3rem 0.9rem; }
   .legend-text { font-size: 0.74rem; }
