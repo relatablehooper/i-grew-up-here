@@ -573,6 +573,10 @@ a:focus-visible .room-rect,
   font-size: clamp(1.05rem, 2.2vw, 1.3rem);
   line-height: 1.65;
   color: var(--ink);
+  /* Preserve the paragraph breaks (\n\n) written into the caption strings
+     in content.js. Without this, multi-paragraph vignettes collapse into
+     one wall of text. */
+  white-space: pre-line;
 }
 .memory-meta {
   margin-top: 1.4rem;
@@ -658,6 +662,7 @@ a:focus-visible .room-rect,
   backdrop-filter: blur(4px);
   border-radius: 6px;
   z-index: 2;
+  white-space: pre-line; /* preserve \n\n paragraph breaks from content.js */
   animation: cafe-intro-rise 1400ms var(--ease) both;
 }
 @keyframes cafe-intro-rise {
@@ -801,6 +806,7 @@ a:focus-visible .room-rect,
   font-family: var(--font-serif);
   font-size: clamp(1.05rem, 2vw, 1.25rem);
   line-height: 1.65;
+  white-space: pre-line; /* preserve \n\n paragraph breaks from content.js */
   color: rgba(255,255,255,0.92);
   background: rgba(0,0,0,0.32);
   backdrop-filter: blur(4px);
@@ -949,6 +955,7 @@ a:focus-visible .room-rect,
   font-size: 1rem;
   line-height: 1.65;
   margin: 0 0 1.4rem;
+  white-space: pre-line; /* preserve \n\n paragraph breaks from content.js */
 }
 .about-subtitle {
   font-family: var(--font-sans);

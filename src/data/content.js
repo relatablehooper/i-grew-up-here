@@ -28,11 +28,15 @@ export const PROJECT = {
   subtitle: "A memory palace, in the shape of a gym.",
   // Shown in the optional "About this project" overlay (helps the teacher see
   // the post-modern devices — keep it honest and short).
-  aboutPostModern:
-    "This story has no fixed order. You build it by wandering. The same building " +
-    "holds three different people who are all me, and in the cafe they finally sit " +
-    "down together. The form is the point: memory is not a line, it is a place you " +
-    "walk through.",
+  aboutPostModern: `Memory doesn't move in straight lines. It moves the way you move through a building, room to room, doubling back, finding that one hallway unlocks something you'd forgotten was stored there.
+
+This project is built on that logic. I Grew Up Here uses Lifetime Fitness in Mississauga as a memory palace: a real physical space that has held three distinct versions of me across a decade. The non-linear structure isn't a stylistic choice. It's the argument. By letting you explore rather than guiding you through, the site asks you to assemble the story the way memory actually assembles experience: fragmented, spatial, yours to sequence.
+
+The building stayed the same. That's the point.
+
+What changed was everything inside it, including me.
+
+— Ayaan`,
 };
 
 /* The four threads. Colors drive the per-room tint (CSS variables). */
@@ -90,12 +94,13 @@ export const ROOMS = [
         photo: "/photos/now.jpg",
         title: "The doors",
         age: 18,
-        caption:
-          "[VOICE SAMPLE — rewrite] I have walked through these doors a thousand " +
-          "times and never the same person twice. Today the scanner beeps and I am " +
-          "eighteen. But the building does not know that. To it, every version of me " +
-          "is still inside, somewhere, mid-game, mid-lap, mid-rep. Pick a direction. " +
-          "You will meet one of them.",
+        caption: `The doors open the same way they always have.
+
+That's the thing nobody tells you about growing up inside a place. The place doesn't change. The lobby still stretches back the same impossible distance. The light still falls through the same windows at the same angle, pale and even, the kind of light that doesn't belong to any particular season. The front desk is where it's always been. The scan beeps. You find your locker, second row, same spot as always, and the building receives you the way it always has: without ceremony, without comment.
+
+You have been eight years old in this lobby. You have been fourteen, frustrated and electric. You are here now.
+
+This is not a tour. This is a memory palace. Move through it however you need to.`,
       },
     ],
   },
@@ -111,70 +116,23 @@ export const ROOMS = [
     personPhoto: null,
     hotspots: [
       {
-        id: "magnetic-tiles",
-        x: 32, y: 58,
-        photo: "/photos/age8-tiles.jpg",
-        title: "The magnetic tiles",
-        age: 8,
-        caption:
-          "[VOICE SAMPLE — rewrite] The tiles click when they find each other. I build " +
-          "a tower taller than my own sitting-down height and it does not fall and that " +
-          "is the whole afternoon. There is no point to it. That is the point. Nobody is " +
-          "keeping score yet.",
-      },
-      {
-        id: "dodgeball",
-        x: 58, y: 52,
-        photo: "/photos/age9-dodgeball.jpg",
-        title: "Dodgeball",
-        age: 9,
-        caption:
-          "[PLACEHOLDER — ~100–140 words, present tense, sensory. The game of tag / " +
-          "dodgeball in the play area. The squeak of shoes, getting hit and not minding, " +
-          "the pure motion of it. Keep it joyful and un-reflective — you are little here.]",
-      },
-      {
-        id: "ipad-lego",
-        x: 44, y: 72,
-        photo: "/photos/age8-lego.jpg",
-        title: "iPad & Lego corner",
-        age: 8,
-        caption:
-          "[PLACEHOLDER — ~100 words. The quiet corner: iPad, Lego. The specific feeling " +
-          "of being absorbed in something small. A detail only you would remember.]",
-      },
-    ],
-  },
+        id: "kids-club",
+        x: 50, y: 55,
+        photo: "/photos/kids-club.jpg",
+        title: "Kids' Club",
+        caption: `The first thing you should know is that I didn't always want to be here.
 
-  {
-    id: "indoor-pool",
-    name: "The Pool / Summer Camp",
-    stage: "play",
-    type: "scene",
-    image: "/scenes/indoor-pool.jpg",
-    map: { x: 35, y: 55 },
-    personPhoto: null,
-    hotspots: [
-      {
-        id: "swim-lessons",
-        x: 40, y: 60,
-        photo: "/photos/age8-swim.jpg",
-        title: "Learning to swim",
-        age: 8,
-        caption:
-          "[PLACEHOLDER — ~120 words. Summer camp, the smell of chlorine, swimming, the " +
-          "pool as the centre of summer. This room is the BRIDGE: play is starting to " +
-          "turn into skill. Hint at that without naming it.]",
-      },
-      {
-        id: "camp-sports",
-        x: 65, y: 50,
-        photo: "/photos/age10-camp.jpg",
-        title: "Summer camp",
-        age: 10,
-        caption:
-          "[PLACEHOLDER — ~100 words. Camp sports, the long unstructured days, friends " +
-          "you only saw in July. The last pure-play summers before it got serious.]",
+My dad had a membership before I had an opinion about it, and so the Kids' Club was simply where I ended up, dropped off while he went to do whatever it was adults did in the parts of the building I wasn't allowed to wander yet. I was anxious the way young kids are anxious in rooms full of strangers. I didn't know anyone. I stood near the wall and waited to feel less like an outsider.
+
+What changed it was the mini basketball hoop. I got a shot off in front of a group of kids and they reacted, and something in the room shifted. Someone started talking to me. Then it was easy. That's all it took: one moment of being good at something in front of people, and suddenly I was part of it.
+
+The Kids' Club was its own small world. There was a treehouse. There were tablets loaded with Geometry Dash, and I lost whole afternoons to that game, fingers working the screen with a focus I didn't yet know how to apply to anything real. There were dodgeball games run by counsellors who took the job seriously. There were movie afternoons, the room dim and crowded, Cloudy with a Chance of Meatballs and Zootopia projected on the wall while we sat on the floor shoulder to shoulder, strangers becoming something closer.
+
+I didn't choose this place. My dad chose it, the way parents choose things for their children before their children know what they need.
+
+But here is what I've come to understand: the anxious kid standing near the wall was already being built into someone. Every afternoon in that room, every game, every film, every moment of accidental belonging, was quietly doing its work.
+
+I just couldn't see it yet.`,
       },
     ],
   },
@@ -195,61 +153,23 @@ export const ROOMS = [
     },
     hotspots: [
       {
-        id: "team-training",
+        id: "the-court",
         x: 50, y: 55,
-        photo: "/photos/age14-court.jpg",
-        title: "Training for the team",
-        age: 14,
-        caption:
-          "[VOICE SAMPLE — rewrite] Now the squeak of shoes means something. Every drill " +
-          "is for a tryout that has not happened yet. I am not playing the game; I am " +
-          "paying for a future game, in advance, in sweat. Fun is still here but it has " +
-          "a job now. We run the line until someone throws up and we are proud of him.",
-      },
-      {
-        id: "highschool-club",
-        x: 72, y: 48,
-        photo: "/photos/age15-jersey.jpg",
-        title: "High-school & club team",
-        age: 15,
-        caption:
-          "[PLACEHOLDER — ~140 words. Making the high-school team and the out-of-school " +
-          "club team. The identity of being 'a basketball player'. The pressure, the " +
-          "belonging, the way the goal narrowed everything to next season.]",
-      },
-    ],
-  },
+        photo: "/photos/court.jpg",
+        title: "The Court",
+        caption: `There is no single moment. That's what I want to be honest about.
 
-  {
-    id: "calisthenics",
-    name: "The Calisthenics Area",
-    stage: "performance",
-    type: "scene",
-    image: "/scenes/calisthenics.jpg",
-    map: { x: 82, y: 50 },
-    personPhoto: null,
-    hotspots: [
-      {
-        id: "bodyweight",
-        x: 45, y: 58,
-        photo: "/photos/age15-calisthenics.jpg",
-        title: "Bodyweight training",
-        age: 15,
-        caption:
-          "[PLACEHOLDER — ~120 words. Calisthenics / bodyweight work, all of it aimed at " +
-          "basketball performance. Pull-ups, dips, the bars. Body as a tool you are " +
-          "sharpening for something else.]",
-      },
-      {
-        id: "friendships",
-        x: 68, y: 64,
-        photo: "/photos/age15-friends.jpg",
-        title: "The friends I made here",
-        age: 15,
-        caption:
-          "[PLACEHOLDER — ~120 words. Meeting people and building friendships through " +
-          "shared training. Friendship forged by suffering together. This is the warm " +
-          "human centre of the performance stage — don't skip it.]",
+This era doesn't compress into one clean memory, a made shot, a perfect game, a flash of clarity. It was an accumulation. Hours and hours on this court that blurred into each other the way practice always does when you're serious about something.
+
+The solo sessions were their own thing entirely. No music, just the sound of the ball and the court. My footwork. The squeak of my sneakers. Sometimes I had the space mostly to myself and I was completely in my own world, and it was both peaceful and pressured at the same time, that particular combination of calm focus and internal demand that comes from being alone with something you care about. I was working on all of it across those years: handles, shooting, conditioning, the parts of my game I'd identified as weak, the gap between who I was and who I wanted to be.
+
+Then there were the afternoons with friends who became close precisely because of this shared obsession. Pickup games that went long enough that nobody noticed the time. You don't manufacture that kind of closeness. It comes from grinding beside someone, from shared failure and shared momentum, from being seen on your worst days and your best ones. Some of those friendships are still the closest ones I have.
+
+The frustration was real. The love was realer. They lived together the whole time, which is the only honest way to describe what it feels like to want to be excellent at something.
+
+The light in here was the same as everywhere else in this building, pale and even and indifferent to the hour. But everything under that light felt urgent. My body was changing. My ambitions were sharpening. I was learning, through ten thousand repetitions, what it meant to want something badly enough to keep showing up for it.
+
+Even when it was hard. Especially then.`,
       },
     ],
   },
@@ -270,51 +190,27 @@ export const ROOMS = [
     },
     hotspots: [
       {
-        id: "lifting",
-        x: 48, y: 56,
-        photo: "/photos/age17-lifting.jpg",
-        title: "Lifting",
-        age: 17,
-        caption:
-          "[VOICE SAMPLE — rewrite] The weights do not care about a season. There is no " +
-          "tryout at the end of this. I am not training to beat anyone now — I am training " +
-          "to still be moving at sixty. The body stopped being a tool I use and became a " +
-          "thing I keep. I rack the bar gently. I have learned it is mine for a while.",
-      },
-      {
-        id: "nutrition",
-        x: 70, y: 60,
-        photo: "/photos/age17-nutrition.jpg",
-        title: "Learning to eat",
-        age: 17,
-        caption:
-          "[PLACEHOLDER — ~120 words. Learning about nutrition, balance, fueling rather " +
-          "than just burning. The shift to thinking long-term about the body. Reflective " +
-          "register — you are nearly the present-day narrator here.]",
-      },
-    ],
-  },
-
-  {
-    id: "sauna",
-    name: "The Sauna & Hot Tub",
-    stage: "cultivation",
-    type: "scene",
-    image: "/scenes/sauna.jpg",
-    map: { x: 62, y: 24 },
-    personPhoto: null,
-    hotspots: [
-      {
-        id: "recovery",
+        id: "the-weight-floor",
         x: 50, y: 55,
-        photo: "/photos/now-sauna.jpg",
-        title: "Recovery",
-        age: 18,
-        caption:
-          "[PLACEHOLDER — ~140 words. Recovery: sauna, hot tub, rest as something you now " +
-          "respect instead of skip. This is the quietest, most reflective room. Let the " +
-          "narrator finally look back here, just before the cafe. The heat, the stillness, " +
-          "the realization that you have changed.]",
+        photo: "/photos/weights.jpg",
+        title: "The Weight Floor",
+        caption: `The shift didn't announce itself.
+
+I just started showing up here more. Basketball became casual, still played, still loved, but held differently, loosely, for fun instead of as proof of something. The weight floor asked a different question: not how good can you get, but who are you building.
+
+I follow programs now. I track progress. I go at 3 or 4 in the afternoon most days, because I've learned that protecting that window, getting there after school before the evening runs away from me, is what consistency actually looks like. It's not inspiration. It's a slot in the day that I've decided matters.
+
+The results are real and visible. I've put in enough time and taken it seriously enough that I'm further along than most people my age, and I know that because I've been honest with myself about what the work requires. Strength is the foundation. But the goal underneath the goal is health, building something that lasts, building a body that can do what I ask of it for a long time.
+
+Sometimes Christian is with me. Sometimes it's the regulars I've gotten to know, familiar faces, nods of recognition, a kind of quiet community that doesn't require much language. Sometimes I'm alone, and I've come to prefer those sessions too. Accountable to no one but yourself. No performance. Just the work.
+
+I scan in at the front desk. I go to the same row of lockers. My body does these things before my mind catches up. You know you belong somewhere when arriving stops requiring a decision.
+
+I am trying to build a strong body and mind. I am trying to become a man I can be proud of.
+
+The light here is the same light it's always been.
+
+I am not.`,
       },
     ],
   },
@@ -330,36 +226,21 @@ export const ROOMS = [
     personPhoto: null,
     hotspots: [
       {
-        id: "slide",
-        x: 35, y: 50,
-        photo: "/photos/family-slide.jpg",
-        title: "The slide",
-        age: 11,
-        caption:
-          "[PLACEHOLDER — ~110 words. The outdoor slide, jumping into the pool, summers " +
-          "with family. Golden-hour warmth. This thread is about belonging, not becoming. " +
-          "Good memories only — no conflict.]",
-      },
-      {
-        id: "outdoor-hottub",
-        x: 60, y: 58,
-        photo: "/photos/family-hottub.jpg",
-        title: "The outdoor hot tub",
-        age: 13,
-        caption:
-          "[PLACEHOLDER — ~100 words. The outdoor hot tub with family. The specific " +
-          "comfort of being together, doing nothing. A sensory anchor.]",
-      },
-      {
-        id: "outdoor-restaurant",
-        x: 75, y: 44,
-        photo: "/photos/family-restaurant.jpg",
-        title: "The outdoor restaurant",
-        age: 12,
-        caption:
-          "[PLACEHOLDER — ~110 words. Eating at the outdoor restaurant with family after " +
-          "the pool. Wet hair, food tasting better than it should. The ritual of it across " +
-          "many summers — same table, different ages.]",
+        id: "summers",
+        x: 50, y: 55,
+        photo: "/photos/summers.jpg",
+        title: "Summers",
+        caption: `The pool is the part of this story that belongs to all of us.
+
+My mom brought me to swim lessons here until I was around twelve, patient and methodical, watching from the edge while instructors moved my arms through the water and taught me that you have to trust the thing holding you up before you can move through it. My dad came for the summers, for the outdoor scene, for the hot tubs, for the particular looseness that a warm afternoon and nowhere urgent to be can give a family. My sister was there too, small and fast and completely fearless.
+
+I remember the slides most clearly. Going again and again, the two of us, each loop faster than the one before, until our lungs hurt from laughing. Then food at the outdoor restaurant: my parents at a table, my sister and I still wet, hotdogs and orange slices that tasted better than they had any right to, the way food always tastes better when your body has been used well.
+
+The light here was different. Outdoor and honest, not the controlled indoor glow of the rest of the building. You could see the sky.
+
+This is the section of the memory palace where time gets slippery. My parents look younger. My sister is the height she was at seven. I am not yet anyone in particular, just a kid, just their kid, just here.
+
+Some rooms you don't outgrow. You just visit them differently.`,
       },
     ],
   },
@@ -374,9 +255,11 @@ export const CAFE = {
   name: "The Cafe",
   image: "/scenes/cafe.jpg",
   map: { x: 50, y: 78 },
-  intro:
-    "[PLACEHOLDER — 2–3 sentences. The narrator sits down and, impossibly, the others " +
-    "are already there. Set the temporal-collapse moment: every age at one table.]",
+  intro: `Imagine they're all here.
+
+The family: younger parents, my sister small, the afternoon pool still on all of us, the taste of oranges and summer.
+
+But in the logic of a memory palace, every room holds everything that ever happened in it simultaneously.`,
   selves: [
     {
       id: "self-play",
@@ -384,19 +267,15 @@ export const CAFE = {
       x: 30, y: 55,
       photo: "/photos/age8-cafe.jpg",
       title: "Eight",
-      caption:
-        "[PLACEHOLDER — what the 8-year-old says / notices. Still present-tense, still " +
-        "unbothered. He does not know he is a memory.]",
+      caption: `The eight-year-old near the wall, watching the door for his dad, not yet knowing that scoring on that mini hoop in front of a group of kids would be the moment everything loosened.`,
     },
     {
       id: "self-performance",
       stage: "performance",
       x: 50, y: 50,
-      photo: "/photos/age15-cafe.jpg",
-      title: "Fifteen",
-      caption:
-        "[PLACEHOLDER — the 15-year-old, still measuring himself against a goal, " +
-        "surprised to be sitting still.]",
+      photo: "/photos/age14-cafe.jpg",
+      title: "Fourteen",
+      caption: `The fourteen-year-old still catching his breath from the court, no headphones, just the sound of the ball and the floor and his own breathing, frustrated and hungry and full of an ambition that doesn't have a shape yet.`,
     },
     {
       id: "self-cultivation",
@@ -405,9 +284,17 @@ export const CAFE = {
       photo: "/photos/now-cafe.jpg",
       title: "Now",
       age: 18,
-      caption:
-        "[PLACEHOLDER — the present narrator. The thesis lands here, gently. 'I grew up " +
-        "here.' The same room, lived three ways, finally in one frame.]",
+      caption: `And the present version: tired in the specific good way that follows real effort, occasionally sitting here with Christian after a session, occasionally alone, occasionally just passing through on the way to somewhere else.
+
+They're all at tables in this cafe. The light is the same as it is everywhere else in this building, pale and steady, the same in February as it is in July. The cafe has never been a destination for me, exactly. More of a passage. Somewhere you end up when the workout is done and you're not ready to go back to the world yet.
+
+What I feel, imagining it, is gratitude.
+
+Not nostalgia. Nostalgia looks backward with longing, wanting to return. This is something different. The anxious kid near the wall, the frustrated teenager on the court, the family loud at the pool, all of it was the construction of this. Every uncomfortable afternoon. Every grinding session. Every hour I didn't choose but ended up inside anyway.
+
+This place didn't change. I did, completely, inside it.
+
+That's the whole story. That's what I grew up here means.`,
     },
   ],
 };
