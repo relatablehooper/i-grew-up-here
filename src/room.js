@@ -21,6 +21,7 @@
 import { ROOMS, STAGES } from "./data/content.js";
 import { openMemoryCard } from "./memoryCard.js";
 import { assetPath } from "./assetPath.js";
+import { markVisited } from "./visited.js";
 
 /* ----------------------------------------------------------------------------
    renderRoom(app, roomId) — paint one room into the container.
@@ -34,6 +35,10 @@ export function renderRoom(app, roomId) {
     app.appendChild(renderNotFound(roomId));
     return;
   }
+
+  // Record that the reader has now actually entered this room — the map uses
+  // this later to draw a subtle "you've been here" underline under the label.
+  markVisited(room.id);
 
   // Outer view. data-stage drives the per-stage color tint via CSS.
   const view = document.createElement("div");

@@ -25,6 +25,16 @@
    story text. (CLAUDE.md section 4: "Separation of content and engine is sacred.")
 ============================================================================ */
 
+/* Fonts vendored locally via @fontsource — see package.json. Bundled by Vite,
+   so the site needs NO connection to Google Fonts at runtime. Important for
+   demo day: the live page must work on a locked-down school network. */
+import "@fontsource/spectral/400.css";
+import "@fontsource/spectral/500.css";
+import "@fontsource/spectral/400-italic.css";
+import "@fontsource/inter/400.css";
+import "@fontsource/inter/500.css";
+import "@fontsource/inter/600.css";
+
 import { STAGES } from "./data/content.js";
 import { renderMap } from "./map.js";
 import { renderRoom } from "./room.js";

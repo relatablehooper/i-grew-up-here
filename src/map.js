@@ -18,6 +18,7 @@
 ============================================================================ */
 
 import { PROJECT, STAGES, ROOMS, CAFE } from "./data/content.js";
+import { isVisited } from "./visited.js";
 
 /* ----------------------------------------------------------------------------
    renderMap(app) — paint the whole hub into the given container element.
@@ -82,6 +83,10 @@ function createRoomMarker(room) {
   // (var(--stage-play) etc., published from content.js in main.js).
   marker.dataset.stage = room.stage || "none";
 
+  // If the reader has already opened this room, mark it so the stylesheet
+  // adds a subtle tint underline beneath the label — like a margin note.
+  if (isVisited(room.id)) marker.dataset.visited = "true";
+
   // Position the marker by its map coordinates (percentages of the floor-plan).
   // translate(-50%,-50%) in CSS centers the marker exactly on that point.
   marker.style.left = `${room.map.x}%`;
@@ -113,6 +118,7 @@ function createCafeMarker(cafe) {
   marker.href = "#cafe";
   marker.style.left = `${cafe.map.x}%`;
   marker.style.top = `${cafe.map.y}%`;
+  if (isVisited(cafe.id)) marker.dataset.visited = "true";
   marker.setAttribute("aria-label", `Enter ${cafe.name}`);
   marker.innerHTML = `
     <span class="cafe-marker-dot" aria-hidden="true"></span>

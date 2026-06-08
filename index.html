@@ -15,15 +15,10 @@
       content="A memory palace, in the shape of a gym. A post-modern personal story."
     />
 
-    <!-- Two type families: a literary serif for vignettes, a clean sans for UI.
-         Loaded from Google Fonts. (CLAUDE.md section 7.) -->
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Spectral:ital,wght@0,400;0,500;1,400&family=Inter:wght@400;500;600&display=swap"
-      rel="stylesheet"
-    />
-
+    <!-- Two type families: a literary serif for vignettes, a clean sans for UI
+         (CLAUDE.md section 7). They are bundled into the build by main.js via
+         @fontsource — NO Google Fonts request happens at runtime, so the page
+         renders correctly even on locked-down networks. -->
     <link rel="stylesheet" href="/src/styles/main.css" />
   </head>
   <body>

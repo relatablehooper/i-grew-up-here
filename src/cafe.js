@@ -25,11 +25,15 @@
 import { CAFE } from "./data/content.js";
 import { openMemoryCard } from "./memoryCard.js";
 import { assetPath } from "./assetPath.js";
+import { markVisited } from "./visited.js";
 
 /* ----------------------------------------------------------------------------
    renderCafe(app) — paint the cafe into the container.
 ---------------------------------------------------------------------------- */
 export function renderCafe(app) {
+  // The cafe counts as "visited" for the map's annotation cues too.
+  markVisited(CAFE.id);
+
   const view = document.createElement("div");
   view.className = "cafe-view";
   // "none" = neutral; per-self tints sit on top of this neutrality.

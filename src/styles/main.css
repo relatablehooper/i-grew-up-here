@@ -189,6 +189,15 @@ a { color: inherit; }
   border-radius: 4px;
 }
 
+/* Visited: a thin tint-colored underline beneath the label — a small
+   "I've inhabited this room" annotation, like marginalia. Set by map.js
+   from localStorage via visited.js. */
+.room-marker[data-visited="true"] .room-label,
+.cafe-marker[data-visited="true"] .cafe-marker-label {
+  border-bottom: 1.5px solid color-mix(in srgb, var(--tint) 80%, transparent);
+  padding-bottom: 0.15rem;
+}
+
 /* Hover / keyboard focus: the marker lifts and its halo blooms. */
 .room-marker:hover,
 .room-marker:focus-visible {
@@ -985,4 +994,79 @@ a { color: inherit; }
   position: static;
   color: var(--ink);
   background: rgba(35, 33, 28, 0.08);
+}
+
+/* ============================================================================
+   14. MOBILE / NARROW VIEWPORTS
+   Phones get a more compact map (smaller dots + labels, slightly squarer
+   floor-plan so it fills the screen), shrunken cafe portraits so all three
+   selves still fit at one table, and smaller corner controls. Everything
+   stays the same form — just tuned for thumbs and small screens.
+============================================================================ */
+@media (max-width: 640px) {
+  /* --- Map: keep the wayfinding readable on a phone --- */
+  .map-view { padding: 1rem; }
+  .map-header { margin-bottom: 0.8rem; }
+  .map-title { font-size: 1.9rem; }
+  .map-subtitle { font-size: 0.95rem; }
+  .map-hint { font-size: 0.7rem; letter-spacing: 0.1em; }
+
+  .floorplan { aspect-ratio: 6 / 5; max-width: 100%; }
+
+  .room-marker { gap: 0.25rem; max-width: 6.5rem; }
+  .room-dot { width: 10px; height: 10px; border-width: 1.5px; }
+  .room-label {
+    font-size: 0.68rem;
+    letter-spacing: 0.04em;
+    padding: 0.1rem 0.3rem;
+  }
+
+  .cafe-marker { gap: 0.3rem; max-width: 6.5rem; }
+  .cafe-marker-dot { width: 12px; height: 12px; }
+  .cafe-marker-label { font-size: 0.72rem; padding: 0.1rem 0.35rem; }
+
+  .legend-list { gap: 0.3rem 0.9rem; }
+  .legend-text { font-size: 0.74rem; }
+
+  /* --- Cafe: shrink portraits so 3 selves at 30/50/70% don't collide --- */
+  .self-portrait { width: 66px; height: 66px; border-width: 2.5px; }
+  .self-portrait .placeholder-label { font-size: 0.6rem; }
+  .self-label { font-size: 0.78rem; padding: 0.05rem 0.4rem; }
+  .cafe-intro {
+    top: 3rem;
+    font-size: 0.88rem;
+    padding: 0.75rem 1rem;
+  }
+
+  /* --- Hotspots: a bigger invisible touch area (visual ring stays small) --- */
+  .hotspot { padding: 0.6rem; }
+  .hotspot-ring { width: 18px; height: 18px; }
+
+  /* --- Room chrome: pull the controls in tighter so they don't crowd --- */
+  .back-button {
+    top: 0.7rem;
+    left: 0.7rem;
+    font-size: 0.72rem;
+    padding: 0.4rem 0.75rem;
+  }
+  .room-nameplate { bottom: 0.9rem; }
+  .room-name { font-size: 1.3rem; }
+  .room-stage-tag {
+    font-size: 0.65rem;
+    letter-spacing: 0.12em;
+    padding: 0.15rem 0.5rem;
+  }
+
+  /* --- About button: tinier corner pill so it doesn't dominate --- */
+  #about-button {
+    top: 0.7rem;
+    right: 0.7rem;
+    font-size: 0.62rem;
+    letter-spacing: 0.14em;
+    padding: 0.32rem 0.65rem;
+  }
+
+  /* --- Intro: a tighter text block on small screens --- */
+  .intro-block { padding: 1.5rem 1rem; }
+  .intro-caption { padding: 1rem 1.1rem; font-size: 1rem; }
 }
