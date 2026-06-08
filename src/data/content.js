@@ -273,9 +273,9 @@ But in the logic of a memory palace, every room holds everything that ever happe
       id: "self-performance",
       stage: "performance",
       x: 50, y: 50,
-      photo: "/photos/ayaan-teen.jpg",
-      title: "Fourteen",
-      caption: `The fourteen-year-old still catching his breath from the court, no headphones, just the sound of the ball and the floor and his own breathing, frustrated and hungry and full of an ambition that doesn't have a shape yet.`,
+      photo: "/photos/ayaan-sixteen.jpg",
+      title: "Sixteen",
+      caption: `The sixteen-year-old still catching his breath from the court, no headphones, just the sound of the ball and the floor and his own breathing, frustrated and hungry and full of an ambition that doesn't have a shape yet.`,
     },
     {
       id: "self-cultivation",
