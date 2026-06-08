@@ -77,6 +77,17 @@ body {
   background: var(--paper);
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
+
+  /* Casual copy-protection: prevent text selection on the whole site so the
+     prose can't be drag-selected and Ctrl+C'd. NOT real DRM — anyone with
+     DevTools or a screenshot can still get the text — just a deterrent.
+     We pair this with a copy-event preventDefault in main.js as belt-and-
+     suspenders for browsers that ignore user-select on keyboard shortcuts. */
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none; /* no iOS long-press "copy" menu */
 }
 
 #app { min-height: 100%; }

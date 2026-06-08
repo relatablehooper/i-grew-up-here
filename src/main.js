@@ -124,6 +124,14 @@ function router() {
 // Publish the stage colors as CSS variables before the first paint.
 applyStageColors();
 
+// Casual copy-protection — see the matching `user-select: none` block in
+// main.css. If the reader manages to select text anyway (e.g., Ctrl+A),
+// the copy/cut keystroke is blocked. Drag-to-save image is also blocked.
+// This is a deterrent, not real DRM.
+for (const evt of ["copy", "cut", "dragstart"]) {
+  document.addEventListener(evt, (e) => e.preventDefault());
+}
+
 // The "About this project" button is in index.html so it's always present.
 // It opens an overlay listing the post-modern devices the form demonstrates —
 // good for the teacher's check-in to see them named on screen.

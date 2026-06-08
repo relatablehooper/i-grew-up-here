@@ -213,13 +213,20 @@ function renderRoom(id, layout, data) {
     </g>
   `;
 
-  // Entrance: visible but not clickable (intro is its real route).
-  if (id === "entrance") return inner;
-
-  // Everything else routes via an SVG <a> — Tab + Enter just works, and the
-  // hash router (main.js) takes it from there.
-  const href = id === "cafe" ? "#cafe" : `#room/${id}`;
-  const ariaLabel = `Enter ${data.name}${visited === "true" ? " (already visited)" : ""}`;
+  // Entrance routes back to the guided opening beat (#intro) so the reader
+  // can revisit the entrance after wandering around inside the building.
+  // Cafe routes to #cafe; every other room routes to #room/<id>.
+  let href, ariaLabel;
+  if (id === "entrance") {
+    href = "#intro";
+    ariaLabel = "Return to the entrance";
+  } else if (id === "cafe") {
+    href = "#cafe";
+    ariaLabel = `Enter ${data.name}${visited === "true" ? " (already visited)" : ""}`;
+  } else {
+    href = `#room/${id}`;
+    ariaLabel = `Enter ${data.name}${visited === "true" ? " (already visited)" : ""}`;
+  }
   return `<a href="${href}" aria-label="${escape(ariaLabel)}">${inner}</a>`;
 }
 
