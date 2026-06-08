@@ -3,6 +3,11 @@ dist
 .DS_Store
 *.log
 
+# Source phone-video originals (kept locally only). The transcoded H.264
+# `.mp4` siblings under public/videos/ ARE committed and served.
+public/videos/*.mov
+public/videos/*.MOV
+
 # Personal planning notes — kept OUT of the public repo on purpose.
 # (Your rubric strategy / private notes shouldn't be on a public website.)
 # Delete these two lines if you ever want them published.

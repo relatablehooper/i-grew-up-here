@@ -15,7 +15,7 @@
    slow fade in and out, focus moves to the close button for accessibility.
 ============================================================================ */
 
-import { PROJECT, POSTMODERN_DEVICES } from "./data/content.js";
+import { PROJECT } from "./data/content.js";
 
 /* ----------------------------------------------------------------------------
    openAbout() — show the About overlay.
@@ -30,29 +30,11 @@ export function openAbout() {
   overlay.setAttribute("aria-modal", "true");
   overlay.setAttribute("aria-label", "About this project");
 
-  // Build the list of post-modern devices from content.js (may be empty if the
-  // student deletes it — the overlay still renders, it just shows no list).
-  const devicesHtml = (POSTMODERN_DEVICES || [])
-    .map(
-      (d) => `
-        <li class="about-device">
-          <span class="about-device-name">${d.name}</span>
-          <span class="about-device-note">${d.note}</span>
-        </li>`
-    )
-    .join("");
-
   overlay.innerHTML = `
     <div class="about-card">
       <button class="about-close" type="button" aria-label="Close">&times;</button>
       <h2 class="about-title">About this project</h2>
       <p class="about-text">${PROJECT.aboutPostModern}</p>
-      ${
-        devicesHtml
-          ? `<h3 class="about-subtitle">Post-modern devices this site uses</h3>
-             <ul class="about-devices">${devicesHtml}</ul>`
-          : ""
-      }
     </div>
   `;
 
