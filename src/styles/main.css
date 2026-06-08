@@ -542,7 +542,180 @@ a { color: inherit; }
 }
 
 /* ============================================================================
-   8. STUB VIEWS (intro / cafe — until those phases are built)
+   8. THE CAFE — the convergence climax
+   The cafe itself reads NEUTRAL (CLAUDE.md s.7: "where all temperatures meet").
+   Each SELF carries its own stage color, so three temperatures sit together
+   in one neutral room. The intro and figures arrive on calm, staggered fades.
+============================================================================ */
+
+/* The whole cafe view, behaves like a room view but neutrally tinted. */
+.cafe-view {
+  position: relative;
+  min-height: 100vh;
+  background: #14130f;
+  overflow: hidden;
+}
+.cafe-view::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(120% 100% at 50% 50%, transparent 60%, rgba(0,0,0,0.55) 100%),
+    linear-gradient(0deg, color-mix(in srgb, var(--tint) 12%, transparent), transparent);
+  mix-blend-mode: multiply;
+}
+
+.cafe-scene { position: absolute; inset: 0; }
+
+/* The intro line — the temporal-collapse setup, slow-faded in. */
+.cafe-intro {
+  position: absolute;
+  top: clamp(3.5rem, 7vh, 5rem);
+  left: 50%;
+  transform: translateX(-50%);
+  max-width: 38rem;
+  width: calc(100% - 3rem);
+  margin: 0;
+  padding: 1rem 1.25rem;
+  text-align: center;
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: clamp(0.95rem, 2vw, 1.15rem);
+  line-height: 1.55;
+  color: rgba(255, 255, 255, 0.92);
+  background: rgba(0, 0, 0, 0.35);
+  backdrop-filter: blur(4px);
+  border-radius: 6px;
+  z-index: 2;
+  animation: cafe-intro-rise 1400ms var(--ease) both;
+}
+@keyframes cafe-intro-rise {
+  from { opacity: 0; transform: translate(-50%, -8px); }
+  to   { opacity: 1; transform: translate(-50%, 0); }
+}
+
+/* The selves' container fills the scene; each self positions itself inside. */
+.cafe-selves {
+  position: absolute;
+  inset: 0;
+  pointer-events: none; /* clicks fall through to the figures only */
+  z-index: 2;
+}
+
+/* One figure. Default opacity is 1 so a reader with "reduced motion" never
+   sees a blank table; the animation just RISES it from 0 on a small delay
+   (animation-delay is set inline per index for a gentle stagger). */
+.cafe-self {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  pointer-events: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  background: none;
+  border: 0;
+  padding: 0.3rem;
+  cursor: pointer;
+  color: #fff;
+  opacity: 1;
+  animation: cafe-self-rise 1400ms var(--ease) backwards;
+}
+@keyframes cafe-self-rise {
+  from { opacity: 0; transform: translate(-50%, calc(-50% + 14px)); }
+  to   { opacity: 1; transform: translate(-50%, -50%); }
+}
+
+/* The round portrait — a circular window onto that age. */
+.self-portrait {
+  position: relative;
+  width: clamp(96px, 13vw, 130px);
+  height: clamp(96px, 13vw, 130px);
+  border-radius: 50%;
+  overflow: hidden;
+  border: 3px solid #fff;
+  background: #1c1a14;
+  /* Two rings: a thin tint halo (this self's stage color), then a soft drop. */
+  box-shadow:
+    0 0 0 4px color-mix(in srgb, var(--tint) 70%, #000 8%),
+    0 12px 30px rgba(0, 0, 0, 0.55);
+  transition: transform 280ms var(--ease), box-shadow 280ms var(--ease);
+}
+.self-photo {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+/* The placeholder label inside the round portrait — slightly tighter. */
+.self-portrait .placeholder-label { font-size: 0.78rem; }
+
+.self-label {
+  font-family: var(--font-serif);
+  font-size: 0.95rem;
+  letter-spacing: 0.06em;
+  padding: 0.1rem 0.55rem;
+  background: rgba(0, 0, 0, 0.45);
+  border-radius: 4px;
+  text-shadow: 0 1px 6px rgba(0, 0, 0, 0.7);
+}
+
+.cafe-self:hover .self-portrait,
+.cafe-self:focus-visible .self-portrait {
+  transform: scale(1.04);
+  box-shadow:
+    0 0 0 6px color-mix(in srgb, var(--tint) 85%, #000 5%),
+    0 14px 36px rgba(0, 0, 0, 0.6);
+}
+
+/* The cafe's marker on the map — distinct from a room marker so the eye
+   notices "this is somewhere else": ink bullseye, italic serif label. */
+.cafe-marker {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.45rem;
+  text-decoration: none;
+  color: var(--ink);
+  width: max-content;
+  max-width: 9rem;
+  text-align: center;
+  transition: transform 220ms var(--ease);
+}
+.cafe-marker-dot {
+  position: relative;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--paper);
+  border: 2px solid var(--ink);
+  box-shadow: 0 0 0 6px rgba(35, 33, 28, 0.06);
+}
+.cafe-marker-dot::after {
+  content: "";
+  position: absolute;
+  inset: 4px;
+  border-radius: 50%;
+  background: var(--ink);
+}
+.cafe-marker-label {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: 0.85rem;
+  letter-spacing: 0.02em;
+  background: color-mix(in srgb, var(--paper) 88%, transparent);
+  padding: 0.15rem 0.5rem;
+  border-radius: 4px;
+}
+.cafe-marker:hover,
+.cafe-marker:focus-visible { transform: translate(-50%, -50%) scale(1.06); }
+
+/* ============================================================================
+   9. STUB VIEWS (intro — until that phase is built)
 ============================================================================ */
 .stub-view {
   min-height: 100vh;

@@ -17,7 +17,7 @@
    changes map.x / map.y in content.js — never this file.
 ============================================================================ */
 
-import { PROJECT, STAGES, ROOMS } from "./data/content.js";
+import { PROJECT, STAGES, ROOMS, CAFE } from "./data/content.js";
 
 /* ----------------------------------------------------------------------------
    renderMap(app) — paint the whole hub into the given container element.
@@ -46,6 +46,12 @@ export function renderMap(app) {
   // Build one marker per room.
   for (const room of ROOMS) {
     plan.appendChild(createRoomMarker(room));
+  }
+
+  // The cafe is its own kind of place — the destination, not just another
+  // room — so it gets a visually distinct marker (see createCafeMarker).
+  if (CAFE) {
+    plan.appendChild(createCafeMarker(CAFE));
   }
 
   view.appendChild(plan);
@@ -88,6 +94,27 @@ function createRoomMarker(room) {
   // Accessible name for screen readers / good alt-style labeling.
   marker.setAttribute("aria-label", `Enter ${room.name}`);
 
+  return marker;
+}
+
+/* ----------------------------------------------------------------------------
+   createCafeMarker(cafe) — the cafe's marker on the floor-plan.
+
+   Deliberately styled different from a stage room: a bullseye dot in ink (no
+   stage color, because the cafe is where all temperatures meet) and an italic
+   serif label. It reads as "the place this map points toward."
+---------------------------------------------------------------------------- */
+function createCafeMarker(cafe) {
+  const marker = document.createElement("a");
+  marker.className = "cafe-marker";
+  marker.href = "#cafe";
+  marker.style.left = `${cafe.map.x}%`;
+  marker.style.top = `${cafe.map.y}%`;
+  marker.setAttribute("aria-label", `Enter ${cafe.name}`);
+  marker.innerHTML = `
+    <span class="cafe-marker-dot" aria-hidden="true"></span>
+    <span class="cafe-marker-label">${cafe.name}</span>
+  `;
   return marker;
 }
 
