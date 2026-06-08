@@ -232,15 +232,21 @@ a { color: inherit; }
 }
 
 /* A subtle full-room tint/vignette in the stage color, so moving between
-   rooms quietly changes the temperature of the light (CLAUDE.md section 7). */
+   rooms quietly changes the temperature of the light (CLAUDE.md section 7).
+   The corners drift TOWARD the stage color (rather than pure black), so the
+   atmosphere reads as "this is what amber/steel-blue/sage light looks like." */
 .room-view::after {
   content: "";
   position: absolute;
   inset: 0;
   pointer-events: none; /* never blocks clicks on hotspots */
   background:
-    radial-gradient(120% 100% at 50% 50%, transparent 55%, rgba(0, 0, 0, 0.55) 100%),
-    linear-gradient(0deg, color-mix(in srgb, var(--tint) 16%, transparent), transparent);
+    radial-gradient(
+      120% 100% at 50% 50%,
+      transparent 50%,
+      color-mix(in srgb, var(--tint) 38%, #000) 100%
+    ),
+    linear-gradient(0deg, color-mix(in srgb, var(--tint) 22%, transparent), transparent);
   mix-blend-mode: multiply;
 }
 
@@ -560,9 +566,12 @@ a { color: inherit; }
   position: absolute;
   inset: 0;
   pointer-events: none;
+  /* The cafe stays neutral (var(--tint) is the neutral grey for data-stage="none"),
+     but the corners darken into a soft warm-grey so the space feels lit, not
+     flat. The three SELVES carry the actual stage colors. */
   background:
-    radial-gradient(120% 100% at 50% 50%, transparent 60%, rgba(0,0,0,0.55) 100%),
-    linear-gradient(0deg, color-mix(in srgb, var(--tint) 12%, transparent), transparent);
+    radial-gradient(120% 100% at 50% 50%, transparent 55%, color-mix(in srgb, var(--tint) 30%, #000) 100%),
+    linear-gradient(0deg, color-mix(in srgb, var(--tint) 14%, transparent), transparent);
   mix-blend-mode: multiply;
 }
 
@@ -715,7 +724,247 @@ a { color: inherit; }
 .cafe-marker:focus-visible { transform: translate(-50%, -50%) scale(1.06); }
 
 /* ============================================================================
-   9. STUB VIEWS (intro — until that phase is built)
+   9. THE INTRO — the single guided beat before free exploration
+   The whole site is non-linear, except this one screen. It establishes voice
+   and hands the reader the form: "pick a direction. you will meet one of them."
+============================================================================ */
+.intro-view {
+  position: relative;
+  min-height: 100vh;
+  background: #14130f;
+  overflow: hidden;
+  display: grid;
+  place-items: center;
+}
+.intro-view::after {
+  /* Same idea as .room-view::after — let the corners drift toward the (here
+     neutral) tint so the entrance feels like a lit room, not a black box. */
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(120% 100% at 50% 50%, transparent 45%, color-mix(in srgb, var(--tint) 45%, #000) 100%),
+    linear-gradient(0deg, rgba(0,0,0,0.45), rgba(0,0,0,0.1));
+}
+.intro-scene { position: absolute; inset: 0; }
+.intro-block {
+  position: relative;
+  z-index: 2;
+  max-width: 38rem;
+  width: calc(100% - 3rem);
+  padding: 2rem;
+  text-align: center;
+  color: #fff;
+  animation: intro-rise 1200ms var(--ease) backwards;
+}
+@keyframes intro-rise {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.intro-title {
+  font-family: var(--font-serif);
+  font-weight: 500;
+  font-size: clamp(2.2rem, 6vw, 3.6rem);
+  line-height: 1.1;
+  margin: 0;
+  text-shadow: 0 2px 24px rgba(0,0,0,0.65);
+}
+.intro-subtitle {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: clamp(1rem, 2.2vw, 1.25rem);
+  color: rgba(255,255,255,0.85);
+  margin: 0.55rem 0 1.8rem;
+}
+.intro-caption {
+  font-family: var(--font-serif);
+  font-size: clamp(1.05rem, 2vw, 1.25rem);
+  line-height: 1.65;
+  color: rgba(255,255,255,0.92);
+  background: rgba(0,0,0,0.32);
+  backdrop-filter: blur(4px);
+  border-radius: 8px;
+  padding: 1.2rem 1.4rem;
+  margin: 0 0 2rem;
+  border-left: 3px solid color-mix(in srgb, var(--tint) 70%, #fff 20%);
+  text-align: left;
+  /* Slight stagger after the title rises. */
+  animation: intro-rise 1400ms var(--ease) 250ms backwards;
+}
+.intro-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-family: var(--font-sans);
+  font-size: 0.78rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  text-decoration: none;
+  color: #fff;
+  padding: 0.85rem 1.4rem;
+  border: 1px solid rgba(255,255,255,0.55);
+  border-radius: 999px;
+  transition: background 220ms var(--ease), transform 220ms var(--ease);
+  animation: intro-rise 1400ms var(--ease) 500ms backwards;
+}
+.intro-cta:hover { background: rgba(255,255,255,0.14); transform: translateY(-1px); }
+
+/* ============================================================================
+   10. VIEW FADE-IN — quiet transition between map / room / cafe / intro
+   Every view animates in on mount so navigation feels like LIGHT changing,
+   not pages flipping (CLAUDE.md s.7: "gentle, slow fades").
+============================================================================ */
+.map-view,
+.room-view,
+.cafe-view,
+.intro-view,
+.stub-view {
+  animation: view-fade-in 700ms var(--ease) both;
+}
+@keyframes view-fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+/* ============================================================================
+   11. FILM GRAIN — soft photographic texture over rooms / cafe / intro
+   Implemented as an SVG noise pattern data-URI so we add zero binary assets
+   and still satisfy CLAUDE.md s.7: "film-grain / soft photographic texture
+   is welcome." Sits BELOW hotspots (z-index 2) so it never blocks clicks.
+============================================================================ */
+.scene::after,
+.pano::after,
+.cafe-scene::after,
+.intro-scene::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background-image: url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20width='160'%20height='160'%3E%3Cfilter%20id='n'%3E%3CfeTurbulence%20type='fractalNoise'%20baseFrequency='0.85'%20numOctaves='2'%20stitchTiles='stitch'/%3E%3CfeColorMatrix%20type='saturate'%20values='0'/%3E%3C/filter%3E%3Crect%20width='100%25'%20height='100%25'%20filter='url(%23n)'%20opacity='0.55'/%3E%3C/svg%3E");
+  background-size: 160px 160px;
+  opacity: 0.18;
+  mix-blend-mode: overlay;
+}
+
+/* ============================================================================
+   12. THE ABOUT BUTTON + OVERLAY
+   The button is in index.html so it's always present in the top-right; the
+   overlay is opened by about.js (mirrors memoryCard.js's pattern).
+============================================================================ */
+#about-button {
+  position: fixed;
+  top: 1.1rem;
+  right: 1.1rem;
+  z-index: 40;
+  font-family: var(--font-sans);
+  font-size: 0.7rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: #fff;
+  background: rgba(20, 18, 14, 0.55);
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  padding: 0.45rem 0.85rem;
+  border-radius: 999px;
+  backdrop-filter: blur(6px);
+  cursor: pointer;
+  opacity: 0.72;
+  transition: opacity 200ms var(--ease), background 200ms var(--ease);
+}
+#about-button:hover,
+#about-button:focus-visible { opacity: 1; background: rgba(20, 18, 14, 0.78); }
+
+.about-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 60; /* above the memory card if both somehow open */
+  display: grid;
+  place-items: center;
+  padding: clamp(1rem, 4vw, 3rem);
+  background: rgba(10, 9, 7, 0.6);
+  backdrop-filter: blur(4px);
+  opacity: 0;
+  transition: opacity var(--fade-slow) var(--ease);
+}
+.about-overlay.is-open { opacity: 1; }
+
+.about-card {
+  position: relative;
+  width: min(620px, 100%);
+  max-height: 88vh;
+  overflow: auto;
+  background: var(--paper);
+  color: var(--ink);
+  border-radius: var(--radius);
+  box-shadow: 0 30px 80px rgba(0,0,0,0.5);
+  padding: clamp(1.6rem, 3vw, 2.4rem);
+  transform: translateY(10px);
+  transition: transform var(--fade-slow) var(--ease);
+}
+.about-overlay.is-open .about-card { transform: translateY(0); }
+
+.about-close {
+  position: absolute;
+  top: 0.6rem;
+  right: 0.7rem;
+  width: 2rem;
+  height: 2rem;
+  border: 0;
+  border-radius: 50%;
+  background: rgba(35,33,28,0.1);
+  color: var(--ink);
+  font-size: 1.25rem;
+  line-height: 1;
+  cursor: pointer;
+}
+.about-title {
+  font-family: var(--font-serif);
+  font-weight: 500;
+  font-size: clamp(1.4rem, 3vw, 1.8rem);
+  margin: 0 0 0.8rem;
+}
+.about-text {
+  font-family: var(--font-serif);
+  font-size: 1rem;
+  line-height: 1.65;
+  margin: 0 0 1.4rem;
+}
+.about-subtitle {
+  font-family: var(--font-sans);
+  font-size: 0.72rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  margin: 1.4rem 0 0.6rem;
+}
+.about-devices {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.about-device {
+  padding: 0.6rem 0;
+  border-bottom: 1px solid rgba(35,33,28,0.12);
+  display: grid;
+  gap: 0.15rem;
+}
+.about-device:last-child { border-bottom: 0; }
+.about-device-name {
+  font-family: var(--font-sans);
+  font-weight: 600;
+  font-size: 0.85rem;
+}
+.about-device-note {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: 0.92rem;
+  color: var(--ink-soft);
+  line-height: 1.5;
+}
+
+/* ============================================================================
+   13. STUB VIEWS (kept for any future placeholder route)
 ============================================================================ */
 .stub-view {
   min-height: 100vh;

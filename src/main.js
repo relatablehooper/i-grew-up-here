@@ -30,6 +30,7 @@ import { renderMap } from "./map.js";
 import { renderRoom } from "./room.js";
 import { renderIntro } from "./intro.js";
 import { renderCafe } from "./cafe.js";
+import { openAbout } from "./about.js";
 
 // The single container in index.html that every view paints into.
 const app = document.getElementById("app");
@@ -64,8 +65,10 @@ function parseHash() {
   const raw = window.location.hash.replace(/^#/, "");
   const [name, param] = raw.split("/");
 
-  // No hash yet? Send the reader to the map — that is where exploration begins.
-  if (!name) return { name: "map", param: null };
+  // No hash yet? Send the reader to the INTRO — the one guided beat — so the
+  // opening voice always lands first. The "Begin" CTA there moves them to #map
+  // where free exploration takes over.
+  if (!name) return { name: "intro", param: null };
 
   return { name, param: param || null };
 }
@@ -110,6 +113,13 @@ function router() {
 
 // Publish the stage colors as CSS variables before the first paint.
 applyStageColors();
+
+// The "About this project" button is in index.html so it's always present.
+// It opens an overlay listing the post-modern devices the form demonstrates —
+// good for the teacher's check-in to see them named on screen.
+document
+  .getElementById("about-button")
+  ?.addEventListener("click", () => openAbout());
 
 // Run the router whenever the hash changes (a link click) ...
 window.addEventListener("hashchange", router);

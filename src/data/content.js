@@ -381,3 +381,45 @@ export const CAFE = {
     },
   ],
 };
+
+/* ----------------------------------------------------------------------------
+   POST-MODERN DEVICES — what shows up in the "About this project" overlay
+   ----------------------------------------------------------------------------
+   The teacher's rubric explicitly grades "clear examples of post-modern
+   elements." The About overlay reads this list verbatim and shows it on screen
+   so a marker can point at each device while playing with the site.
+
+   These are MY (the engine's) suggested defaults — feel free to rename, reorder,
+   add to, or rewrite the notes in your own voice. The names line up with the
+   ones CLAUDE.md / your rubric uses.
+---------------------------------------------------------------------------- */
+export const POSTMODERN_DEVICES = [
+  {
+    name: "Non-linear, fragmented narrative",
+    note: "You pick the path. The story has no fixed order; it's assembled by wandering.",
+  },
+  {
+    name: "Spatial form replaces chronological time",
+    note: "Geography organises the story instead of a timeline. The map IS the plot.",
+  },
+  {
+    name: "Temporal collapse",
+    note: "In the cafe, every age sits at one table at once. Three times in one frame.",
+  },
+  {
+    name: "Multiplicity of self",
+    note: "There is no single narrator — there are versions of him, room by room.",
+  },
+  {
+    name: "Reader as co-author",
+    note: "The interactivity is the point: meaning only exists when you build it.",
+  },
+  {
+    name: "Metafiction",
+    note: "The piece is openly a 'text made of memory' — a building used as a book.",
+  },
+  {
+    name: "Intertextual nod to Borges",
+    note: "The labyrinth / infinite-space motif — the rubric names 'The Immortal'.",
+  },
+];

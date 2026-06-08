@@ -30,6 +30,13 @@
     <!-- The engine paints every view (map, room, card) into this container. -->
     <div id="app"></div>
 
+    <!-- A persistent corner button so a reader can find "About this project"
+         from ANY view. main.js wires up its click to open the overlay; the
+         overlay names the post-modern devices for the teacher's check-in. -->
+    <button id="about-button" type="button" aria-label="About this project">
+      About this project
+    </button>
+
     <!-- ES module entry. Vite bundles everything that this imports. -->
     <script type="module" src="/src/main.js"></script>
   </body>

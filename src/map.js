@@ -43,8 +43,11 @@ export function renderMap(app) {
   const plan = document.createElement("div");
   plan.className = "floorplan";
 
-  // Build one marker per room.
+  // Build one marker per room — EXCEPT rooms flagged `intro: true`. The
+  // entrance is its own guided beat at #intro; it shouldn't appear as a
+  // free-explore option on the map.
   for (const room of ROOMS) {
+    if (room.intro) continue;
     plan.appendChild(createRoomMarker(room));
   }
 
